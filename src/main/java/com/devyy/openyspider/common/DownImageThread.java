@@ -1,12 +1,13 @@
 package com.devyy.openyspider.common;
 
+
 public class DownImageThread implements Runnable {
 
     private String onlinePath;
     private String localPath;
 
 
-    DownImageThread(String onlinePath, String localPath) {
+    public DownImageThread(String onlinePath, String localPath) {
         this.onlinePath = onlinePath;
         this.localPath = localPath;
     }

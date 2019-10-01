@@ -1,5 +1,5 @@
 # OpenYspider
-百万级图片爬虫：tujidao.com、tangyun365.com、yalayi.com、rosmm88.com、mzsock.com、yande.re
+百万级图片、视频爬虫 [开源版本]：tujidao.com、tangyun365.com、yalayi.com、rosmm88.com、mzsock.com、yande.re、m7.22c.im
 
 ## 绪论
 图片爬虫并不是什么高技术的东西，想象一下，你从浏览器看到喜欢的图片，然后鼠标右键保存到本地。图片爬虫只不过是把这个过程以程序的方式来执行。
@@ -39,3 +39,6 @@
 ### Y 站
 - 目标网站：[https://yande.re/post](https://yande.re/post)
 - 图片路径长、无相册概念、数量级约 50 万张
+### 恋恋影视
+- 目标网站：[http://m7.22c.im](http://m7.22c.im)
+- 视频网站、每个请求带时间戳，无法持久化 URL、非会员限制单线程下载

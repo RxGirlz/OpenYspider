@@ -3,12 +3,9 @@ package com.devyy.openyspider.yande;
 import com.devyy.openyspider.common.DownImageThread;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -94,6 +91,7 @@ public class YandeController {
             //     ><span class="directlink-res">1496 x 1978</span></a
             //   >
             // </li>
+
             if (Objects.nonNull(document)) {
                 document.getElementById("post-list-posts").children().forEach(element -> {
                     // p572390
@@ -123,33 +121,32 @@ public class YandeController {
      */
     @PostMapping("/step2")
     public String step2() {
-        ExecutorService service = Executors.newFixedThreadPool(8);
+        ExecutorService service = Executors.newFixedThreadPool(12);
         // 分页查询 500000 张  5000 * 100
-        for (int page = 0; page < 100; page++) {
-            PageRequest pageRequest = PageRequest.of(page, 5000);
+        for (int page = 0; page < 50; page++) {
+            PageRequest pageRequest = PageRequest.of(page, 10000);
             yandeJpaDAO.findAll(pageRequest).forEach(bean -> {
                 String onlinePath = bean.getImgUrl();
                 // D:/Yande爬虫/p572/p572406.jpg
-                String localFolder = null;
-                try {
+                String localFolder;
+                if (bean.getImgName().length() >= 4) {
                     localFolder = "D:/Yande爬虫/" + bean.getImgName().substring(0, 4);
-                } catch (StringIndexOutOfBoundsException e) {
-                    logger.warn("StringIndexOutOfBoundsException bean.getImgName()={}", bean.getImgName());
+                } else {
+                    localFolder = "D:/Yande爬虫/p000";
                 }
-                if (Objects.nonNull(localFolder)) {
-                    // 若文件夹路径不存在，则新建
-                    File file = new File(localFolder);
-                    if (!file.exists()) {
-                        if (!file.mkdirs()) {
-                            logger.error("==>localFolder={} 创建文件路径失败", localFolder);
-                        }
+
+                // 若文件夹路径不存在，则新建
+                File file = new File(localFolder);
+                if (!file.exists()) {
+                    if (!file.mkdirs()) {
+                        logger.error("==>localFolder={} 创建文件路径失败", localFolder);
                     }
-                    String localPath = localFolder + "/" + bean.getImgName() + ".jpg";
-                    // 幂等，若当前文件未下载，则进行下载
-                    File file2 = new File(localPath);
-                    if (!file2.exists()) {
-                        service.execute(new DownImageThread(onlinePath, localPath));
-                    }
+                }
+                String localPath = localFolder + "/" + bean.getImgName() + ".jpg";
+                // 幂等，若当前文件未下载，则进行下载
+                File file2 = new File(localPath);
+                if (!file2.exists()) {
+                    service.execute(new DownImageThread(onlinePath, localPath));
                 }
             });
         }

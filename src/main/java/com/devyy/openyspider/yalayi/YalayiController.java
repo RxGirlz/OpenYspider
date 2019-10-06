@@ -3,6 +3,8 @@ package com.devyy.openyspider.yalayi;
 import com.devyy.openyspider.common.ReptileUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 雅拉伊-爬虫 HTTP 调用接口
@@ -33,7 +36,7 @@ public class YalayiController {
      * 雅拉伊-相册目录路径前缀
      */
     private static final String[] YALAYI_PREFIXS = {
-//            "https://www.yalayi.com/gallery",
+            "https://www.yalayi.com/gallery",
 //            "https://www.yalayi.com/gallery/index_2.html",
 //            "https://www.yalayi.com/gallery/index_3.html",
 //            "https://www.yalayi.com/gallery/index_4.html",
@@ -43,7 +46,7 @@ public class YalayiController {
 //            "https://www.yalayi.com/gallery/index_8.html",
 //            "https://www.yalayi.com/gallery/index_9.html",
 
-//            "https://www.yalayi.com/selected",
+            "https://www.yalayi.com/selected",
 //            "https://www.yalayi.com/selected/index_2.html",
 //            "https://www.yalayi.com/selected/index_3.html",
 //            "https://www.yalayi.com/selected/index_4.html",
@@ -51,13 +54,13 @@ public class YalayiController {
 //            "https://www.yalayi.com/selected/index_6.html",
 //            "https://www.yalayi.com/selected/index_7.html",
 
-            "https://www.yalayi.com/free/",
+//            "https://www.yalayi.com/free/",
     };
 
     /**
      * 雅拉伊-本地存储路径前缀（根据情况自定义）
      */
-    private static final String YALAYI_LOCAL_PREFIX = "D:/雅拉伊爬虫/FREE/";
+    private static final String YALAYI_LOCAL_PREFIX = "D:/雅拉伊爬虫/";
 
     /**
      * Step1：解析 HTML 页面元素并持久化到数据库
@@ -89,7 +92,7 @@ public class YalayiController {
                     yalayiDO.setAlbumUpdate(albumUpdate);
                     yalayiDO.setAlbumInfo(albumInfo);
                     yalayiDO.setAlbumNum(albumNum);
-                    yalayiDO.setAlbumType(YalayiTypeEnum.FREE.getSeq());
+//                    yalayiDO.setAlbumType(YalayiTypeEnum.GALLERY.getSeq());
 
                     // 幂等，保证记录数唯一
                     if (Objects.isNull(yalayiJpaDAO.findByAlbumInfoEquals(yalayiDO.getAlbumInfo()))) {
@@ -110,11 +113,20 @@ public class YalayiController {
      */
     @PostMapping("/step2")
     public String step2() {
-        // 是否使用离线 HTML 文件
-        final boolean isOffline = false;
+        // 配置 chromedriver.exe 路径
+        System.setProperty("webdriver.chrome.driver", "C:/Users/DEVYY/Documents/chromedriver_win32/chromedriver.exe");
+        // 启动一个 chrome 实例
+        WebDriver webDriver = new ChromeDriver();
+        // 设置超时时间为 10s
+        webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        webDriver.get("https://www.yalayi.com/gallery/");
 
-        yalayiJpaDAO.findByAlbumTypeEquals(YalayiTypeEnum.FREE.getSeq()).forEach(yalayiDO -> {
+        // wait 35s 输入账号密码
+        this.waitSeconds(35);
+
+        yalayiJpaDAO.findAll().forEach(yalayiDO -> {
             String onlineUrl = yalayiDO.getAlbumUrl();
+            logger.info("==>onlineUrl={}", onlineUrl);
 
             // 文件夹名
             String folderName = yalayiDO.getAlbumInfo() + "-" + yalayiDO.getAlbumName() + "-" + yalayiDO.getModelName() + "-" + yalayiDO.getAlbumNum() + "p/";
@@ -128,19 +140,18 @@ public class YalayiController {
                 }
             }
 
-            Document document = null;
             try {
-                if (isOffline) {
-                    // 离线 HTML 文本
-                    String offlineUrl = onlineUrl.replace("https://www.yalayi.com/gallery", "D:/雅拉伊爬虫/offlineHTML");
-                    File offlineHtml = new File(offlineUrl);
-                    document = Jsoup.parse(offlineHtml, "UTF-8", "");
-                } else {
-                    document = Jsoup.connect(onlineUrl).get();
-                }
-            } catch (IOException e) {
-                logger.error("Jsoup Error: {}", e.getMessage());
+                webDriver.get(onlineUrl);
             }
+            // 此处捕获所有 Throwable 因为并不需要关心，还会中断程序
+            catch (Throwable e) {
+                logger.warn(e.getMessage().substring(0, 30));
+            }
+
+            // wait 2s 加载动态页面
+            this.waitSeconds(2);
+            Document document = Jsoup.parse(webDriver.getPageSource());
+
             if (Objects.nonNull(document)) {
                 document.getElementsByClass("lazy").forEach(lazyElment -> {
                     String onlinePath = lazyElment.attr("data-src");
@@ -154,12 +165,26 @@ public class YalayiController {
                         // 幂等，若当前文件未下载，则进行下载
                         File file2 = new File(filePath);
                         if (!file2.exists()) {
-                            ReptileUtil.syncDownload(onlinePath, filePath);
+                            ReptileUtil.asyncDownload(onlinePath, filePath);
                         }
                     }
                 });
             }
         });
         return "success";
+    }
+
+    /**
+     * 线程睡眠
+     *
+     * @param seconds 秒
+     */
+    private void waitSeconds(int seconds) {
+        try {
+            logger.info("==>waitSeconds {}s", seconds);
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage());
+        }
     }
 }

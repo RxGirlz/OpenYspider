@@ -48,7 +48,7 @@ public class ReptileUtil {
             }
             fileOutputStream.write(output.toByteArray());
 
-            logger.info("==>onlinePath={} localPath={} 下载成功", onlinePath, localPath);
+            logger.info("==>下载成功 localPath={}", localPath);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

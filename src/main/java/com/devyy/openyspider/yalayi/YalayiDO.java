@@ -89,8 +89,6 @@ public class YalayiDO {
 
     /**
      * 相册类型
-     *
-     * @see YalayiTypeEnum
      */
     @Column(name = "album_type")
     private Integer albumType;

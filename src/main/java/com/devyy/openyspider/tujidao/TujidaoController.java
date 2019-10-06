@@ -72,7 +72,7 @@ public class TujidaoController {
 
         Document document = null;
         final int MIN_PAGE = 1;
-        final int MAX_PAGE = 3;
+        final int MAX_PAGE = 4;
         for (int i = MIN_PAGE; i <= MAX_PAGE; i++) {
             try {
                 document = Jsoup.connect(TUJIDAO_URL_PREFIX + i).cookies(cookiesMap).get();

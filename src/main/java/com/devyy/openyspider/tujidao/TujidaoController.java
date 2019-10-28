@@ -1,6 +1,7 @@
 package com.devyy.openyspider.tujidao;
 
 import com.devyy.openyspider.common.DownImageThread;
+import com.devyy.openyspider.common.ReptileUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -42,7 +43,9 @@ public class TujidaoController {
     // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（00001-10000）/";
     // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（10001-20000）/";
     // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（20001-27864）/";
-    private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（27865-）/";
+//    private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（27865-）/";
+     private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（30001-）/";
+
     /**
      * 图集岛-图片真实路径前缀
      */
@@ -108,8 +111,8 @@ public class TujidaoController {
     @PostMapping("/step2")
     public String step2() {
         ExecutorService executorService = Executors.newFixedThreadPool(4);
-        final int startInt = 27865;
-        final int endInt = 30000;
+        final int startInt = 30001;
+        final int endInt = 40000;
         tujidaoJpaDAO.findAllByNumberBetweenOrderByNumberDesc(startInt, endInt).forEach(albumDO -> {
             int total = albumDO.getTotal();
             int num = albumDO.getNumber();
@@ -134,6 +137,36 @@ public class TujidaoController {
                 }
             }
         });
+        return "success";
+    }
+
+    /**
+     * Step2：区间下载相册
+     */
+    @PostMapping("/step3")
+    public String step3() {
+        String localFolder = "D:/图集岛爬虫封面/";
+        // 若文件夹路径不存在，则新建
+        File file = new File(localFolder);
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                logger.error("==>localFolder={} 创建文件路径失败", localFolder);
+            }
+        }
+        final int startInt = 30243;
+        final int endInt = 32000;
+
+        for(int i=startInt;i<=endInt;i++) {
+
+                String onlinePath = TUJIDAO_IMG_URL_PREFIX + i + "/0.jpg";
+                String localPath = localFolder + "/" + i + "-0.jpg";
+
+                // 幂等，若当前文件未下载，则进行下载
+                File file2 = new File(localPath);
+                if (!file2.exists()) {
+                    ReptileUtil.syncDownload(onlinePath, localPath);
+            }
+        }
         return "success";
     }
 

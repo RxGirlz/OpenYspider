@@ -38,8 +38,8 @@ public enum LLYSTypeEnum {
 //    XUE_YUAN_PAI_X15Y(14, "http://m7.22c.im/x15y", "学院派-服装学院甘露露", 13),
 //    XING_GAN_CHE_MO(15, "http://m7.22c.im/c", "性感车模", 217),
 
-    PANS(16, "http://m7.22a.im/ps", "PANS写真", 1004,1211),
-    DON_GAN(17, "http://m7.22a.im/q", "动感小站", 275),
+//    PANS(16, "http://m7.22a.im/ps", "PANS写真", 1004,1211),
+//    DON_GAN(17, "http://m7.22a.im/q", "动感小站",95, 275),
     GUO_CHAN_1(19, "http://m7.22a.im/a", "国产私拍一", 54),
     GUO_CHAN_2(20, "http://m7.22a.im/2a", "国产私拍二", 162),
 

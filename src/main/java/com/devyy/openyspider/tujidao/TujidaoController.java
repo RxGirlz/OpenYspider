@@ -7,6 +7,7 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -169,6 +170,38 @@ public class TujidaoController {
         }
         return "success";
     }
+
+    @PostMapping("/step4/{id}")
+    public String step4(@PathVariable String id) {
+        String localFolder = "D:/图集岛爬虫Preview/"+id+"/";
+        // 若文件夹路径不存在，则新建
+        File file = new File(localFolder);
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                logger.error("==>localFolder={} 创建文件路径失败", localFolder);
+            }
+        }
+
+
+        for(int i=0;;i++) {
+            String onlinePath = TUJIDAO_IMG_URL_PREFIX + id + "/"+i+".jpg";
+            String localPath = localFolder  +i+".jpg";
+
+            // 幂等，若当前文件未下载，则进行下载
+            File file2 = new File(localPath);
+
+            if (!file2.exists()) {
+                try {
+                    ReptileUtil.syncDownload(onlinePath, localPath);
+                } catch (Throwable t){
+                    break;
+                }
+            }
+        }
+        return "success";
+    }
+
+
 
     /**
      * 去除 '[' 和 ']'

@@ -51,6 +51,7 @@ public class ReptileUtil {
             logger.info("==>下载成功 localPath={}", localPath);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 

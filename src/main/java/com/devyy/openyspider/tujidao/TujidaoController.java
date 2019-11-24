@@ -75,8 +75,8 @@ public class TujidaoController {
         cookiesMap.put("UM_distinctid", "16d258579f52e1-0321e74b65393f-5373e62-1fa400-16d258579f75aa");
 
         Document document = null;
-        final int MIN_PAGE = 1;
-        final int MAX_PAGE = 4;
+        final int MIN_PAGE = 51;
+        final int MAX_PAGE = 60;
         for (int i = MIN_PAGE; i <= MAX_PAGE; i++) {
             try {
                 document = Jsoup.connect(TUJIDAO_URL_PREFIX + i).cookies(cookiesMap).get();

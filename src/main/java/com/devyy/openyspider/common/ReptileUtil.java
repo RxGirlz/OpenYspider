@@ -1,5 +1,6 @@
 package com.devyy.openyspider.common;
 
+import com.sun.jndi.toolkit.url.Uri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -35,8 +37,11 @@ public class ReptileUtil {
      * @param localPath  本地图片路径
      */
     public static void syncDownload(String onlinePath, String localPath) {
-        try (DataInputStream dataInputStream = new DataInputStream(new URL(onlinePath).openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream(new File(localPath))) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(new File(localPath))) {
+            URL imgUrl = new URL(onlinePath);
+            URLConnection con = imgUrl.openConnection();
+            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36");
+            DataInputStream dataInputStream = new DataInputStream(con.getInputStream());
 
             ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -50,8 +55,7 @@ public class ReptileUtil {
 
             logger.info("==>下载成功 localPath={}", localPath);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw new RuntimeException(e);
+            logger.error(e.getMessage(), e);
         }
     }
 

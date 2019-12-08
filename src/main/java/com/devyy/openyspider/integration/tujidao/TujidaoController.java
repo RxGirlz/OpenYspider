@@ -25,11 +25,11 @@ public class TujidaoController {
         return tujidaoService.doScanAlbums();
     }
 
-//    @ApiOperation(value = "下载图片")
-//    @PostMapping("/step2")
-//    public String step2() {
-//        return tujidaoService.doDownload();
-//    }
+    @ApiOperation(value = "扫描下载封面")
+    @PostMapping("/step2")
+    public String step2() {
+        return tujidaoService.doDownloadCover();
+    }
 
     @ApiOperation(value = "预下载")
     @PostMapping("/step3")

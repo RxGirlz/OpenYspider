@@ -7,6 +7,14 @@ import com.devyy.openyspider.base.IBaseService;
  */
 public interface ITujidaoService extends IBaseService {
     /**
+     * feature: 封面扫描
+     *
+     * @return success
+     * @since 2019-12-08
+     */
+    String doDownloadCover();
+
+    /**
      * feature: 预下载功能
      *
      * @return success

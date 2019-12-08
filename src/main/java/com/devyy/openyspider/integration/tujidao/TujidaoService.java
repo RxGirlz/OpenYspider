@@ -144,6 +144,33 @@ public class TujidaoService implements ITujidaoService {
     }
 
     @Override
+    public String doDownloadCover() {
+        String localFolder = "D:/图集岛爬虫封面/";
+        // 若文件夹路径不存在，则新建
+        File file = new File(localFolder);
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                log.error("==>localFolder={} 创建文件路径失败", localFolder);
+            }
+        }
+        final int startInt = 31546;
+        final int endInt = 32180;
+
+        for (int i = startInt; i <= endInt; i++) {
+
+            String onlinePath = TUJIDAO_IMG_URL_PREFIX + i + "/0.jpg";
+            String localPath = localFolder + "/" + i + "-0.jpg";
+
+            // 幂等，若当前文件未下载，则进行下载
+            File file2 = new File(localPath);
+            if (!file2.exists()) {
+                ReptileUtil.syncDownload(onlinePath, localPath);
+            }
+        }
+        return "success";
+    }
+
+    @Override
     public String doPreDownload() {
 //        final int startInt = 31246;
 //        final int endInt = 31545;

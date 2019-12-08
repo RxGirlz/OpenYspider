@@ -1,27 +1,21 @@
-# OpenYspider
+# OpenYspider 2.x
 
-百万级图片、视频爬虫 [开源版本]：tujidao.com、tangyun365.com、yalayi.com、rosmm88.com、mzsock.com、yande.re、m7.22c.im
+千万级图片、视频爬虫 [开源版本]：`tujidao.com`、`yande.re`、`meinvla.net`
 
-## 绪论
+![](swagger-ui.png)
 
-图片爬虫并不是什么高技术的东西，想象一下，你从浏览器看到喜欢的图片，然后鼠标右键保存到本地。图片爬虫只不过是把这个过程以程序的方式来执行。
+注: `tangyun365.com`、`yalayi.com`、`rosmm88.com`、`mzsock.com`、`m7.22c.im` 请切换至 `1.x` 分支查看。
 
-爬虫不能爬取你浏览不到的信息（除非你能猜到图片资源 url 的规律），如果你无法找到图片的 url，当然是无法爬取的（除非你穷举所有 url 的排列组合）。
+## 2.x 版本新特性
 
-一般来说，爬取图片网站分为三步:
-
-1. 确定实体类（譬如一个相册），以便通过遍历来访问得到所有相册；
-2. 获得相册中每张图片的 url 地址
-3. 高速地下载图片到本地
-
-这三步看起来十分容易，但其实在 9102 年的今天，很多网站都做了反爬处理，一般来说，并不会太容易得逞。
-
-## 需求分析
-
-1. 不要重复下载图片，而且图片名字要有意义，最好能够溯源（通过文件名保证唯一）
-2. 爬取速度要快，不要重复爬取相同的内容（通过数据库做持久化保证唯一）
-3. 下载速度要快，进程挂了的时候重新下载不需要过多的耗时（线程池）
-4. 线程池中线程超时不释放导致占用线程池资源，降低效率
+1. `Spring Boot` 版本升级: `2.1.8` => `2.2.1`
+2. `jdk` 版本升级: `1.8` => `11`
+3. `MySQL` 版本升级: `5.7` => `8.0`
+4. `ORM` 框架调整: `JPA` => `Mybatis-Plus`
+5. 引入 `swagger-ui` 最新版 `2.9.2`
+6. 新增 `tujidao` 预下载特性
+7. 移除 `llys、mzsock、rosi、tangyun、yalayi`
+8. 数倍性能提升、数量级提升: `百万级` => `千万级`
 
 ## 爬取网站
 
@@ -30,43 +24,65 @@
 - 目标网站：[http://www.tujidao.com/](http://www.tujidao.com/)
 - 特点：图片路径可遍历
 
-### 2 唐韵文化 [ 5,159P / 5.84G ]
-
-- 目标网站：[http://tangyun365.com/](http://tangyun365.com/)
-- 特点：真实图片路径与缩略图图片路径对应
-
-### 3 雅拉伊 [ 11,451P / 10.6G ]
-
-- 目标网站：[https://www.yalayi.com/](https://www.yalayi.com/)
-- 特点：会员付费 ￥ 30
-
-### 4 ROSI [ 134,729P / 12.5G ]
-
-- 目标网站：[https://www.rosmm88.com/](https://www.rosmm88.com/)
-- 特点：会员付费 ￥ 6.00、网页通过 js 异步渲染反爬
-
-### 5 MZSOCK [ 19,963P / 2.98G ]
-
-- 目标网站：[http://mzsock.com/](http://mzsock.com/)
-- 重复度高、相册分页
-
-### 6 Y 站 [ 461,338P / 718G ]
+### 2 Y 站 [ 461,338P / 718G ]
 
 - 目标网站：[https://yande.re/post](https://yande.re/post)
 - 图片路径长、无相册概念
 
-### 7 恋恋影视 [ 2,958V / 62G ]
+### 3 美女啦 [ 统计中 约 300w P ]
 
-- 目标网站：[http://m7.22c.im](http://m7.22c.im)
-- 视频网站、每个请求带时间戳，无法持久化 URL、非会员限制单线程下载
+- 目标网站：[http://www.meinvla.net/](http://www.meinvla.net/)
 
-## 成果展示
+## SQL 建表语句
 
-![](readme/图集岛爬虫（00001-10000）.png)
-![](readme/图集岛爬虫（10001-20000）.png)
-![](readme/图集岛爬虫（20001-27864）.png)
-![](readme/唐韵爬虫.png)
-![](readme/雅拉伊爬虫.png)
-![](readme/ROSI爬虫.png)
-![](readme/Mzsock爬虫.png)
-![](readme/Yande爬虫.png)
+```sql
+# tbl_tujidao_album
+CREATE TABLE `tbl_tujidao_album` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `state` int(11) DEFAULT NULL COMMENT '状态',
+  `total` int(11) DEFAULT NULL COMMENT '图片总数',
+  `album_name` varchar(255) DEFAULT NULL COMMENT '相册名',
+  `album_id` int(11) DEFAULT NULL COMMENT '相册id',
+  `type` int(11) DEFAULT NULL COMMENT '相册类型',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `album_id_UNIQUE` (`album_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+# tbl_yande_image
+CREATE TABLE `tbl_yande_image` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `img_name` varchar(10) DEFAULT NULL COMMENT '图片本地名',
+  `img_url` varchar(500) DEFAULT NULL COMMENT '图片远端名',
+  `state` int(11) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `img_naem_UNIQUE` (`img_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+# tbl_meinvla_album
+CREATE TABLE `tbl_meinvla_album` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `state` int(11) DEFAULT NULL COMMENT '状态',
+  `album_name` varchar(255) DEFAULT NULL COMMENT '相册名',
+  `album_id` int(11) DEFAULT NULL COMMENT '相册id',
+  `type` int(11) DEFAULT NULL COMMENT '相册类型',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `album_id_UNIQUE` (`album_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+# tbl_meinvla_image
+CREATE TABLE `tbl_meinvla_image` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `img_name` varchar(64) DEFAULT NULL COMMENT '图片本地名',
+  `img_url` varchar(500) DEFAULT NULL COMMENT '图片远端名',
+  `album_id` int(11) DEFAULT NULL COMMENT '相册id',
+  `state` int(11) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `img_naem_UNIQUE` (`img_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+```
+
+## 部分成果展示
+
+![](result1.png)
+
+![](result2.png)

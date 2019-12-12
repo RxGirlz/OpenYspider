@@ -10,6 +10,17 @@ import lombok.Getter;
 @Getter
 public enum StateTypeEnum {
     /**
+     * 黑名单
+     */
+    BLACKLIST(-1, "黑名单"),
+    /**
+     * 白名单
+     */
+    WHITELIST(0, "白名单"),
+
+    //
+
+    /**
      * 下载完成
      */
     DONE(102, "下载完成"),

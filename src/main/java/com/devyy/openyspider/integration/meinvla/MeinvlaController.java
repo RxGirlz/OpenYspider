@@ -23,7 +23,6 @@ public class MeinvlaController {
     @ApiOperation(value = "扫描相册")
     @PostMapping("/step1")
     public String step1() {
-        log.info("==>step1");
         return meinvlaService.doScanAlbums();
     }
 
@@ -37,5 +36,11 @@ public class MeinvlaController {
     @PostMapping("/step3")
     public String step3() {
         return meinvlaService.doDataClean();
+    }
+
+    @ApiOperation(value = "下载图片")
+    @PostMapping("/step4")
+    public String step4() {
+        return meinvlaService.doDownload();
     }
 }

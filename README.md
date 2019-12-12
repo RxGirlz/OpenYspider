@@ -69,6 +69,10 @@ CREATE TABLE `tbl_meinvla_album` (
   UNIQUE KEY `album_id_UNIQUE` (`album_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
+ALTER TABLE `dev`.`tbl_meinvla_album` 
+ADD COLUMN `total` INT(11) NULL COMMENT '图片总数' AFTER `type`,
+ADD COLUMN `cur_total` INT(11) NULL COMMENT '当前图片总数' AFTER `total`;
+
 # tbl_meinvla_image
 CREATE TABLE `tbl_meinvla_image` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',

@@ -24,4 +24,9 @@ public class MeinvlaAlbumDO {
     private Integer albumId;
 
     private Integer type;
+
+    private Integer total;
+
+    @TableField("cur_total")
+    private Integer curTotal;
 }

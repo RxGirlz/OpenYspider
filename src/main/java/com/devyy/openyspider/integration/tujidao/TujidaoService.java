@@ -132,7 +132,7 @@ public class TujidaoService implements ITujidaoService {
                 File file2 = new File(localPath);
                 if (!file2.exists()) {
 //                    executorService.execute(() -> {
-                    ReptileUtil.syncDownload(localPath, onlinePath);
+                    ReptileUtil.ioDownload(localPath, onlinePath);
 //                    });
                 }
             }
@@ -164,7 +164,7 @@ public class TujidaoService implements ITujidaoService {
             // 幂等，若当前文件未下载，则进行下载
             File file2 = new File(localPath);
             if (!file2.exists()) {
-                ReptileUtil.syncDownload(onlinePath, localPath);
+                ReptileUtil.ioDownload(onlinePath, localPath);
             }
         }
         return "success";
@@ -233,7 +233,7 @@ public class TujidaoService implements ITujidaoService {
             File file2 = new File(localPath);
 
             if (!file2.exists()) {
-                if (!ReptileUtil.syncDownload(onlinePath, localPath)) {
+                if (!ReptileUtil.ioDownload(onlinePath, localPath)) {
                     break;
                 }
             }

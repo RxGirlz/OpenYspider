@@ -43,4 +43,16 @@ public class MeinvlaController {
     public String step4() {
         return meinvlaService.doDownload();
     }
+
+    @ApiOperation(value = "扫描视频")
+    @PostMapping("/step5")
+    public String step5() {
+        return meinvlaService.doScanVideo();
+    }
+
+    @ApiOperation(value = "下载视频")
+    @PostMapping("/step6")
+    public String step6() {
+        return meinvlaService.doDownloadVideo();
+    }
 }

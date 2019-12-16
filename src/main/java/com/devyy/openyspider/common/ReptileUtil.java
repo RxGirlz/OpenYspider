@@ -2,12 +2,19 @@ package com.devyy.openyspider.common;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.regex.Pattern;
 
 /**
@@ -27,7 +34,7 @@ public class ReptileUtil {
      * @param onlinePath 线上图片路径
      * @param localPath  本地图片路径
      */
-    public static boolean syncDownload(String onlinePath, String localPath) {
+    public static boolean ioDownload(String onlinePath, String localPath) {
         try (FileOutputStream fileOutputStream = new FileOutputStream(new File(localPath))) {
             URL imgUrl = new URL(onlinePath);
             URLConnection con = imgUrl.openConnection();
@@ -48,6 +55,25 @@ public class ReptileUtil {
             }
             fileOutputStream.write(output.toByteArray());
 
+            log.info("==>下载成功 localPath={}", localPath);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * nio
+     *
+     * @param onlinePath 线上图片路径
+     * @param localPath  本地图片路径
+     */
+    public static boolean nioDownload(String onlinePath, String localPath) {
+        try (InputStream inputStream = new URL(onlinePath).openStream()) {
+            Path target = Paths.get(new URI(localPath));
+            Files.createDirectories(target.getParent());
+            Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
             log.info("==>下载成功 localPath={}", localPath);
             return true;
         } catch (Exception e) {

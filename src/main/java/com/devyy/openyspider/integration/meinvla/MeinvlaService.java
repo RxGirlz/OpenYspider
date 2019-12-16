@@ -1,6 +1,5 @@
 package com.devyy.openyspider.integration.meinvla;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.devyy.openyspider.base.StateTypeEnum;
 import com.devyy.openyspider.common.ReptileUtil;
@@ -9,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
@@ -46,16 +46,12 @@ public class MeinvlaService implements IMeinvlaService {
         List<MeinvlaTypeEnum> typeEnumList = MeinvlaTypeEnum.getEnums();
         // 每一种相册类型
         for (MeinvlaTypeEnum typeEnum : typeEnumList) {
-            if (typeEnum.getSeq() > 36) {
-                doScanAlbumsOrVideos(typeEnum, true);
-            } else {
-                doScanAlbumsOrVideos(typeEnum, false);
-            }
+            doScanAlbumsOrVideos(typeEnum);
         }
         return "success";
     }
 
-    private void doScanAlbumsOrVideos(MeinvlaTypeEnum typeEnum, boolean isAlbum) {
+    private void doScanAlbumsOrVideos(MeinvlaTypeEnum typeEnum) {
         // 设 1000 页为结束页，获取末页 id
         String urlEnd = String.format(Locale.ENGLISH, "http://www.meinvla.net/video/type%s/-----gold-1000.html", typeEnum.getSeq());
         Integer endAlbumId = null;
@@ -63,7 +59,11 @@ public class MeinvlaService implements IMeinvlaService {
         try {
             Document document = Jsoup.connect(urlEnd).get();
             String endEffect5Href = document
-                    .getElementsByClass(isAlbum ? "index-body-nr-left-1-li xl6 xs4 xm4 xb3" : "index-body-nr-left-1-li xl6 xs4 xm4 xb2")
+                    .getElementsByClass(
+                            typeEnum.isAlbum()
+                                    ? "index-body-nr-left-1-li xl6 xs4 xm4 xb3"
+                                    : "index-body-nr-left-1-li xl6 xs4 xm4 xb2"
+                    )
                     .last()
                     .getElementsByClass("effect5")
                     .first()
@@ -86,7 +86,11 @@ public class MeinvlaService implements IMeinvlaService {
             }
             if (Objects.nonNull(document)) {
                 for (Element element : document
-                        .getElementsByClass(isAlbum ? "index-body-nr-left-1-li xl6 xs4 xm4 xb3" : "index-body-nr-left-1-li xl6 xs4 xm4 xb2")) {// 相册名
+                        .getElementsByClass(
+                                typeEnum.isAlbum()
+                                        ? "index-body-nr-left-1-li xl6 xs4 xm4 xb3"
+                                        : "index-body-nr-left-1-li xl6 xs4 xm4 xb2"
+                        )) {
                     String effect5Title = element.getElementsByClass("effect5").first().attr("title");
                     String effect5Href = element.getElementsByClass("effect5").first().attr("href");
 
@@ -109,7 +113,6 @@ public class MeinvlaService implements IMeinvlaService {
                     } else {
                         log.warn("记录已存在 typeEnum={} i={} albumId={} albumName={}", typeEnum, i, albumId, albumName);
                     }
-
                 }
                 if (Objects.equals(curAlbumId, endAlbumId)) {
                     log.warn("==>curAlbumId==endAlbumId={} 跳出当前循环", endAlbumId);
@@ -131,15 +134,11 @@ public class MeinvlaService implements IMeinvlaService {
         // wait 30s 输入账号密码
         this.waitSeconds(35);
 
-        // SELECT * FROM tbl_meinvla_album WHERE (total IS NULL AND state <> -1)
         QueryWrapper<MeinvlaAlbumDO> wrapper = new QueryWrapper<>();
         wrapper.select()
                 .ne("state", StateTypeEnum.BLACKLIST.getSeq())
-//                .ne("state", StateTypeEnum.ANALYSIS.getSeq())
                 .isNull("total")
-//                .eq("state", StateTypeEnum.EXCEPTION.getSeq())
-                .in("type", 103, 104, 105, 107, 109, 110, 141, 150, 151, 159, 187, 188, 189, 190
-                );
+                .in("type", 121,122,123,124,125,126,127,129,130,131,134,136,137,138,140,144,145,146);
         meinvlaAlbumMapper.selectList(wrapper).forEach(vo -> {
             final Integer albumId = vo.getAlbumId();
             // http://www.meinvla.net/play/6048211.html
@@ -154,16 +153,12 @@ public class MeinvlaService implements IMeinvlaService {
                 log.warn(e.getMessage().substring(0, 30));
             }
 
-            // wait 5s 加载动态页面
-//            this.waitSeconds(1);
             Document document = Jsoup.parse(webDriver.getPageSource());
 
             if (Objects.nonNull(document)) {
                 boolean is500 = false;
-//                Elements elements = document.getElementsByClass("img-responsive lazy img_lazy");
                 Elements elements = document.getElementsByClass("player tu_bodyplay").first().children();
                 for (Element element : elements) {
-//                    String src = element.getElementsByTag("img").first().attr("src");
                     String src = element.getElementsByTag("a").first().attr("href");
                     // "//p.10019.net/tu/bcb2cf50509a1267f2b6d94f2530f5b814ApE01.jpg.jpg"
                     // 其中 "//p.10019.net/tu/" 长度为 17
@@ -251,8 +246,7 @@ public class MeinvlaService implements IMeinvlaService {
         QueryWrapper<MeinvlaAlbumDO> wrapper = new QueryWrapper<>();
         wrapper.select()
                 .ne("state", StateTypeEnum.BLACKLIST.getSeq())
-                .in("type", 103, 104, 105, 107, 109, 110, 141, 150, 151, 159, 187, 188, 189, 190
-                );
+                .lt("type", 50);
         meinvlaAlbumMapper.selectList(wrapper).forEach(vo -> {
             final int albumId = vo.getAlbumId();
             final String albumName = vo.getAlbumName();
@@ -272,8 +266,8 @@ public class MeinvlaService implements IMeinvlaService {
                     .eq("album_id", albumId)
                     .ne("state", StateTypeEnum.DONE.getSeq());
             meinvlaImageMapper.selectList(wrapper2).forEach(img -> {
-                String onlinePath = "http:" + img.getImgUrl();
-                String localPath = localFolder + "/" + img.getImgName() + ".jpg";
+                String onlinePath = img.getImgUrl();
+                String localPath = localFolder + "/" + img.getImgName() + ".mp4";
 
                 // 幂等，若当前文件未下载，则进行下载
                 File file2 = new File(localPath);
@@ -285,7 +279,7 @@ public class MeinvlaService implements IMeinvlaService {
                     img.setState(StateTypeEnum.DOWNLOADING.getSeq());
                     meinvlaImageMapper.updateById(img);
                     // 下载
-                    if (ReptileUtil.syncDownload(onlinePath, localPath)) {
+                    if (ReptileUtil.ioDownload(onlinePath, localPath)) {
                         img.setState(StateTypeEnum.DONE.getSeq());
                     } else {
                         img.setState(StateTypeEnum.STARTED.getSeq());
@@ -335,11 +329,114 @@ public class MeinvlaService implements IMeinvlaService {
         QueryWrapper<MeinvlaAlbumDO> wrapper = new QueryWrapper<>();
         wrapper.select()
                 .ne("state", StateTypeEnum.BLACKLIST.getSeq())
+                .ne("state", StateTypeEnum.ANALYSIS.getSeq())
+                .lt("type", 50);
+        List<MeinvlaAlbumDO> meinvlaAlbumDOS = meinvlaAlbumMapper.selectList(wrapper);
+        for (MeinvlaAlbumDO vo : meinvlaAlbumDOS) {
+            final Integer albumId = vo.getAlbumId();
+            // http://www.meinvla.net/play/6048211.html
+            String url = "http://www.meinvla.net/play/" + albumId + ".html";
+
+            try {
+                log.info("==>url {}", url);
+                webDriver.get(url);
+                webDriver.switchTo().frame(webDriver.findElement(By.className("embed-responsive-item")));
+            }
+            // 此处捕获所有 Throwable 因为并不需要关心，还会中断程序
+            catch (Throwable e) {
+                log.warn(e.getMessage().substring(0, 30));
+                continue;
+            }
+
+            Document document = Jsoup.parse(webDriver.getPageSource());
+
+            if (Objects.nonNull(document)) {
+                String src = document
+                        .getElementsByClass("dplayer-video dplayer-video-current")
+                        .first()
+                        .attr("src");
+                String imgName = src.replace("http://sp.10019.net/", "").replace(".mp4", "");
+                if (imgName.length() <= 64) {
+                    MeinvlaImageDO meinvlaImgDO = new MeinvlaImageDO();
+                    meinvlaImgDO.setAlbumId(albumId);
+                    meinvlaImgDO.setImgUrl(src);
+                    meinvlaImgDO.setImgName(imgName);
+                    meinvlaImgDO.setState(StateTypeEnum.STARTED.getSeq());
+
+                    Map<String, Object> queryMap = new HashMap<>(1);
+                    queryMap.put("img_name", imgName);
+                    if (CollectionUtils.isEmpty(meinvlaImageMapper.selectByMap(queryMap))) {
+                        meinvlaImageMapper.insert(meinvlaImgDO);
+                        log.info("==>doScanImages albumId={} imgName={} imgUrl={}", albumId, imgName, src);
+                    } else {
+                        log.warn("记录已存在 albumId={} imgName={} imgUrl={}", albumId, imgName, src);
+                    }
+                }
+                // update
+                Map<String, Object> albumIdMap = new HashMap<>(1);
+                albumIdMap.put("album_id", albumId);
+                if (!CollectionUtils.isEmpty(meinvlaImageMapper.selectByMap(albumIdMap))) {
+                    vo.setState(StateTypeEnum.ANALYSIS.getSeq());
+                } else {
+                    log.warn("==>albumId={} 未达预期", albumId);
+                    vo.setState(StateTypeEnum.EXCEPTION.getSeq());
+                }
+                meinvlaAlbumMapper.updateById(vo);
+            }
+        }
+        return "success";
+    }
+
+    @Override
+    public String doDownloadVideo() {
+        ExecutorService service = Executors.newFixedThreadPool(8);
+
+        QueryWrapper<MeinvlaAlbumDO> wrapper = new QueryWrapper<>();
+        wrapper.select()
+                .ne("state", StateTypeEnum.BLACKLIST.getSeq())
                 .lt("type", 50);
         meinvlaAlbumMapper.selectList(wrapper).forEach(vo -> {
+            final int albumId = vo.getAlbumId();
+            final String albumName = vo.getAlbumName();
+            final int typeSeq = vo.getType();
+
+            String localFolder = MEINVLA_LOCAL_PREFIX + MeinvlaTypeEnum.getEnumBySeq(typeSeq).getDesc();
+            // 若文件夹路径不存在，则新建
+            File file = new File(localFolder);
+            if (!file.exists()) {
+                if (!file.mkdirs()) {
+                    log.error("==>localFolder={} 创建文件路径失败", localFolder);
+                }
+            }
+
+            QueryWrapper<MeinvlaImageDO> wrapper2 = new QueryWrapper<>();
+            wrapper2.select()
+                    .eq("album_id", albumId)
+                    .ne("state", StateTypeEnum.DONE.getSeq());
+            meinvlaImageMapper.selectList(wrapper2).forEach(img -> {
+                String onlinePath = img.getImgUrl();
+                String localPath = localFolder + "/" + albumName + ".mp4";
+
+                // 幂等，若当前文件未下载，则进行下载
+                File file2 = new File(localPath);
+                if (file2.exists()) {
+                    file2.delete();
+                }
+                service.execute(() -> {
+                    // 下载中-便于线程宕掉后回溯
+                    img.setState(StateTypeEnum.DOWNLOADING.getSeq());
+                    meinvlaImageMapper.updateById(img);
+                    // 下载
+                    if (ReptileUtil.ioDownload(onlinePath, localPath)) {
+                        img.setState(StateTypeEnum.DONE.getSeq());
+                    } else {
+                        img.setState(StateTypeEnum.STARTED.getSeq());
+                    }
+                    meinvlaImageMapper.updateById(img);
+                });
+            });
 
         });
-
         return "success";
     }
 }

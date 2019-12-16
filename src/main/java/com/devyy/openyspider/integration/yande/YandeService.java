@@ -105,7 +105,7 @@ public class YandeService implements IYandeService {
                     bean.setState(StateTypeEnum.DOWNLOADING.getSeq());
                     yandeImageMapper.updateById(bean);
                     // 下载
-                    if (ReptileUtil.syncDownload(onlinePath, localPath)) {
+                    if (ReptileUtil.ioDownload(onlinePath, localPath)) {
                         bean.setState(StateTypeEnum.DONE.getSeq());
                     } else {
                         bean.setState(StateTypeEnum.STARTED.getSeq());

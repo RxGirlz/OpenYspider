@@ -177,7 +177,7 @@ public enum MeinvlaTypeEnum {
     }
 
     public static List<MeinvlaTypeEnum> getEnums() {
-        return List.of(values());
+        return Arrays.asList(values());
     }
 
     public static MeinvlaTypeEnum getEnumBySeq(int seq) {

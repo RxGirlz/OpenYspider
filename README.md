@@ -17,6 +17,27 @@
 7. 移除 `llys、mzsock、rosi、tangyun、yalayi`
 8. 数倍性能提升、数量级提升: `百万级` => `千万级`
 
+## 使用
+
+由于美女网需要登录，所以必须安装一下插件
+
+### Windows
+ 
+下载安装 chromedriver.exe
+
+### Mac OS X
+
+安装chromedriver
+
+```shell script
+brew cask install chromedriver
+```
+然后把插件改成对应路径
+例如
+```shell script
+System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+```
+
 ## 爬取网站
 
 ### 1 图集岛（原美图日） [ 1,631,937P / 522G ]

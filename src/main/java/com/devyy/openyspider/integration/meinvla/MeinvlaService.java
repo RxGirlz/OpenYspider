@@ -126,6 +126,9 @@ public class MeinvlaService implements IMeinvlaService {
     public String doScanImages() {
         // 配置 chromedriver.exe 路径
         System.setProperty("webdriver.chrome.driver", "C:/Users/DEVYY/Documents/chromedriver_win32/chromedriver.exe");
+        // Mac 用户
+        // todo 这些配置，最好放到application.properties文件里
+        // System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
         // 启动一个 chrome 实例
         WebDriver webDriver = new ChromeDriver();
         // 设置超时时间为 30 s
@@ -320,6 +323,9 @@ public class MeinvlaService implements IMeinvlaService {
     public String doScanVideo() {
         // 配置 chromedriver.exe 路径
         System.setProperty("webdriver.chrome.driver", "C:/Users/DEVYY/Documents/chromedriver_win32/chromedriver.exe");
+        // Mac 用户
+        // todo 这些配置，最好放到application.properties文件里
+        // System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
         // 启动一个 chrome 实例
         WebDriver webDriver = new ChromeDriver();
         // 设置超时时间为 30 s

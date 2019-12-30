@@ -129,7 +129,7 @@ public class MeinvlaService implements IMeinvlaService {
         // 启动一个 chrome 实例
         WebDriver webDriver = new ChromeDriver();
         // 设置超时时间为 30 s
-        webDriver.manage().timeouts().pageLoadTimeout(15, TimeUnit.SECONDS);
+        webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         webDriver.get("http://www.meinvla.net/user-login.html");
         // wait 30s 输入账号密码
         this.waitSeconds(35);
@@ -138,7 +138,7 @@ public class MeinvlaService implements IMeinvlaService {
         wrapper.select()
                 .ne("state", StateTypeEnum.BLACKLIST.getSeq())
                 .isNull("total")
-                .in("type", 121,122,123,124,125,126,127,129,130,131,134,136,137,138,140,144,145,146);
+                .in("type", 87,89,95,96,97,112,113,116,117,118,119,120);
         meinvlaAlbumMapper.selectList(wrapper).forEach(vo -> {
             final Integer albumId = vo.getAlbumId();
             // http://www.meinvla.net/play/6048211.html
@@ -155,7 +155,10 @@ public class MeinvlaService implements IMeinvlaService {
 
             Document document = Jsoup.parse(webDriver.getPageSource());
 
-            if (Objects.nonNull(document)) {
+            if (Objects.nonNull(document) &&
+                    Objects.nonNull(document.getElementsByClass("player tu_bodyplay")) &&
+                    Objects.nonNull(document.getElementsByClass("player tu_bodyplay").first()) &&
+                    Objects.nonNull(document.getElementsByClass("player tu_bodyplay").first().children())) {
                 boolean is500 = false;
                 Elements elements = document.getElementsByClass("player tu_bodyplay").first().children();
                 for (Element element : elements) {
@@ -246,7 +249,7 @@ public class MeinvlaService implements IMeinvlaService {
         QueryWrapper<MeinvlaAlbumDO> wrapper = new QueryWrapper<>();
         wrapper.select()
                 .ne("state", StateTypeEnum.BLACKLIST.getSeq())
-                .lt("type", 50);
+                .in("type", 87,89,95,96,97,112,113,116,117,118,119,120);
         meinvlaAlbumMapper.selectList(wrapper).forEach(vo -> {
             final int albumId = vo.getAlbumId();
             final String albumName = vo.getAlbumName();
@@ -266,8 +269,8 @@ public class MeinvlaService implements IMeinvlaService {
                     .eq("album_id", albumId)
                     .ne("state", StateTypeEnum.DONE.getSeq());
             meinvlaImageMapper.selectList(wrapper2).forEach(img -> {
-                String onlinePath = img.getImgUrl();
-                String localPath = localFolder + "/" + img.getImgName() + ".mp4";
+                String onlinePath = "http:" + img.getImgUrl();
+                String localPath = localFolder + "/" + img.getImgName() + ".jpg";
 
                 // 幂等，若当前文件未下载，则进行下载
                 File file2 = new File(localPath);

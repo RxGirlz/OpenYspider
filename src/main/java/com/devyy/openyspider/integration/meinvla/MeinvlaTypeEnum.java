@@ -51,8 +51,8 @@ public enum MeinvlaTypeEnum {
     T87(87, "禁忌摄影"),
     T88(88, "国产美女"), // done
     T89(89, "韩国美女"),
-    T90(90, "dgc套图"),
-    T91(91, "bwh套图"),
+    T90(90, "dgc套图"), // pass
+    T91(91, "bwh套图"), // pass
     T92(92, "ys-web"), // pass
     T93(93, "wpb套图"), // pass
     T94(94, "台湾美腿女郎"), // pass
@@ -63,8 +63,8 @@ public enum MeinvlaTypeEnum {
     T99(99, "minisuka-tv"), // pass
     T100(100, "bejean-on-line"), // pass
     // 15
-    T101(101, "misty套图"),
-    T102(102, "bomb-tv套图"),
+    T101(101, "misty套图"), // pass
+    T102(102, "bomb-tv套图"), // pass
     T103(103, "妖妖vip套图"), // done
     T104(104, "拍美vip套图"), // done
     T105(105, "波斯猫儿vip"), // done
@@ -73,7 +73,7 @@ public enum MeinvlaTypeEnum {
     T108(108, "欧美丝袜泰斗"), // pass
     T109(109, "动感小站vip"), // done
     T110(110, "中高艺套图"), // done
-    T111(111, "ns-eyes套图"),
+    T111(111, "ns-eyes套图"), // pass
     T112(112, "two-套图"),
     T113(113, "柔丝晴晴"),
     T114(114, "cosplay美女"), // pass
@@ -82,35 +82,35 @@ public enum MeinvlaTypeEnum {
     T117(117, "丝图阁"),
     T118(118, "唯美丝"),
     T119(119, "disi写真"),
-    T120(120, "4k-star日本ol"),
+    T120(120, "4k-star日本ol"), // pass
     // 35
-    T121(121, "naked-art日本女优"),
-    T122(122, "pans写真"),
-    T123(123, "趣向俱乐部"),
-    T124(124, "syukou-club丝袜"),
-    T125(125, "d-ch丝袜诱惑"),
-    T126(126, "princess collection"),
-    T127(127, "3agirl写真"),
+    T121(121, "naked-art日本女优"), // done
+    T122(122, "pans写真"), // done
+    T123(123, "趣向俱乐部"), // done
+    T124(124, "syukou-club丝袜"), // done
+    T125(125, "d-ch丝袜诱惑"), // done
+    T126(126, "princess collection"), // done
+    T127(127, "3agirl写真"), // done
     T128(128, "秀人模特"), // pass
-    T129(129, "ru1mm丝袜"),
-    T130(130, "丝尚美女"),
-    T131(131, "allgravure套图"),
+    T129(129, "ru1mm丝袜"), // done
+    T130(130, "丝尚美女"), // done
+    T131(131, "allgravure套图"), // done
     T132(132, "image-tv套图"), // pass
     T133(133, "imouto-tv套图"), // pass
-    T134(134, "上海炫彩时尚"),
+    T134(134, "上海炫彩时尚"), // done
     T135(135, "layered-nylons"), // pass
-    T136(136, "leghacker"),
-    T137(137, "丽阁影像"),
-    T138(138, "网络收集"),
-    T139(139, "街拍美女"),  // pass
-    T140(140, "唯美写真"),
+    T136(136, "leghacker"), // done
+    T137(137, "丽阁影像"), // done
+    T138(138, "网络收集"), // done
+    T139(139, "街拍美女"), // pass
+    T140(140, "唯美写真"), // done
     // 55
     T141(141, "legku丝足"), // done
     T142(142, "推女郎"), // pass
     T143(143, "尤果性感美女"), // pass
-    T144(144, "芬妮高清丝足"),
-    T145(145, "神艺缘"),
-    T146(146, "蕾丝兔宝宝"),
+    T144(144, "芬妮高清丝足"), // done
+    T145(145, "神艺缘"), // done
+    T146(146, "蕾丝兔宝宝"), // done
     T147(147, "mygirl美媛馆"), // pass
     T148(148, "aiss爱丝"), // pass
     T149(149, "tgod推女神"), // pass

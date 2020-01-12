@@ -153,8 +153,8 @@ public class TujidaoService implements ITujidaoService {
                 log.error("==>localFolder={} 创建文件路径失败", localFolder);
             }
         }
-        final int startInt = 31546;
-        final int endInt = 32180;
+        final int startInt = 32181;
+        final int endInt = 33073;
 
         for (int i = startInt; i <= endInt; i++) {
 
@@ -172,10 +172,8 @@ public class TujidaoService implements ITujidaoService {
 
     @Override
     public String doPreDownload() {
-//        final int startInt = 31246;
-//        final int endInt = 31545;
-        final int startInt = 29952;
-        final int endInt = 29971;
+        final int startInt = 32181;
+        final int endInt = 33073;
         for (int i = startInt; i <= endInt; i++) {
             this.downloadByAlbumId(String.valueOf(i));
         }

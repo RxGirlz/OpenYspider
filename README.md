@@ -32,8 +32,9 @@
 ```shell script
 brew cask install chromedriver
 ```
-然后把插件改成对应路径
-例如
+
+然后把插件改成对应路径，例如：
+
 ```shell script
 System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 ```
@@ -54,10 +55,15 @@ System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 
 - 目标网站：[http://www.meinvla.net/](http://www.meinvla.net/)
 
+### 4 Leetcode 题集
+
+- 目标网站：[https://leetcode-cn.com/problems](https://leetcode-cn.com/problems)
+- apache common、freemarker 模板、自动化测试
+
 ## SQL 建表语句
 
 ```sql
-# tbl_tujidao_album
+-- tbl_tujidao_album
 CREATE TABLE `tbl_tujidao_album` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `state` int(11) DEFAULT NULL COMMENT '状态',
@@ -69,7 +75,7 @@ CREATE TABLE `tbl_tujidao_album` (
   UNIQUE KEY `album_id_UNIQUE` (`album_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
-# tbl_yande_image
+-- tbl_yande_image
 CREATE TABLE `tbl_yande_image` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `img_name` varchar(10) DEFAULT NULL COMMENT '图片本地名',
@@ -79,22 +85,20 @@ CREATE TABLE `tbl_yande_image` (
   UNIQUE KEY `img_naem_UNIQUE` (`img_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
-# tbl_meinvla_album
+-- tbl_meinvla_album
 CREATE TABLE `tbl_meinvla_album` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `state` int(11) DEFAULT NULL COMMENT '状态',
   `album_name` varchar(255) DEFAULT NULL COMMENT '相册名',
   `album_id` int(11) DEFAULT NULL COMMENT '相册id',
   `type` int(11) DEFAULT NULL COMMENT '相册类型',
+  `total` INT(11) NULL COMMENT '图片总数',
+  `cur_total` INT(11) NULL COMMENT '当前图片总数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `album_id_UNIQUE` (`album_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
-ALTER TABLE `dev`.`tbl_meinvla_album` 
-ADD COLUMN `total` INT(11) NULL COMMENT '图片总数' AFTER `type`,
-ADD COLUMN `cur_total` INT(11) NULL COMMENT '当前图片总数' AFTER `total`;
-
-# tbl_meinvla_image
+-- tbl_meinvla_image
 CREATE TABLE `tbl_meinvla_image` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `img_name` varchar(64) DEFAULT NULL COMMENT '图片本地名',
@@ -103,6 +107,30 @@ CREATE TABLE `tbl_meinvla_image` (
   `state` int(11) DEFAULT NULL COMMENT '状态',
   PRIMARY KEY (`id`),
   UNIQUE KEY `img_naem_UNIQUE` (`img_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+-- tbl_leetcode_problem
+CREATE TABLE `tbl_leetcode_problem` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `title` varchar(255) DEFAULT NULL COMMENT '标题名',
+  `title_cn` varchar(255) DEFAULT NULL COMMENT '中文标题名',
+  `title_slug` varchar(255) DEFAULT NULL COMMENT '路径名',
+  `paid_only` int(1) DEFAULT NULL COMMENT '是否付费',
+  `question_id` bigint(20) NOT NULL COMMENT '问题 ID',
+  `fe_question_id` varchar(64) NOT NULL COMMENT '问题前端 ID',
+  `difficulty` int(11) DEFAULT NULL COMMENT '难度',
+  `has_bug` INT(1) NULL DEFAULT NULL COMMENT '是否存在渲染bug',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `question_id_UNIQUE` (`question_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+-- tbl_leetcode_problem_detail
+CREATE TABLE `tbl_leetcode_problem_detail` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `question_id` bigint(20) NOT NULL COMMENT '问题 ID',
+  `html_content` text NOT NULL COMMENT '问题前端 ID',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `question_id_UNIQUE` (`question_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ```
 

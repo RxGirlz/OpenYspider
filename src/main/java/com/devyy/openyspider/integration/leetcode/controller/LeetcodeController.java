@@ -1,5 +1,6 @@
-package com.devyy.openyspider.integration.leetcode;
+package com.devyy.openyspider.integration.leetcode.controller;
 
+import com.devyy.openyspider.integration.leetcode.service.ILeetcodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController
-@RequestMapping("/json")
+@RequestMapping("/leetcode")
 @Api(tags = "Leetcode 爬虫")
 public class LeetcodeController {
     @Resource
@@ -38,27 +39,21 @@ public class LeetcodeController {
         return leetcodeService.doScanProblemsDetail();
     }
 
-    @ApiOperation(value = "批量生成 Markdown 文件")
+    @ApiOperation(value = "测试 Vuepress 渲染 Bug")
     @PostMapping("/step4")
     public String step4() {
-        return leetcodeService.doGeneratorMarkdownFiles();
+        return leetcodeService.doTestVuePressBugs();
     }
 
-    @ApiOperation(value = "批量生成 Sidebar 模块文件")
+    @ApiOperation(value = "扫描图片资源")
     @PostMapping("/step5")
     public String step5() {
-        return leetcodeService.doGeneratorSidebarFiles();
+        return leetcodeService.doScanImages();
     }
 
-    @ApiOperation(value = "批量生成 Git 提交脚本")
+    @ApiOperation(value = "下载图片")
     @PostMapping("/step6")
     public String step6() {
-        return leetcodeService.doGeneratorGitCommitCmd();
-    }
-
-    @ApiOperation(value = "测试 Vuepress 渲染 Bug")
-    @PostMapping("/step7")
-    public String step7() {
-        return leetcodeService.doTestVuePressBugs();
+        return leetcodeService.doDownload();
     }
 }

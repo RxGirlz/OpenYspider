@@ -1,11 +1,19 @@
-package com.devyy.openyspider.integration.leetcode;
+package com.devyy.openyspider.integration.leetcode.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.devyy.openyspider.base.StateTypeEnum;
+import com.devyy.openyspider.common.ReptileUtil;
+import com.devyy.openyspider.integration.leetcode.domain.LeetCodeProblemDO;
+import com.devyy.openyspider.integration.leetcode.domain.LeetCodeProblemDetailDO;
+import com.devyy.openyspider.integration.leetcode.domain.LeetcodeImageDO;
+import com.devyy.openyspider.integration.leetcode.enums.LeetcodeSideBarEnum;
 import com.devyy.openyspider.integration.leetcode.gson.GetQuestionTranslationGson;
 import com.devyy.openyspider.integration.leetcode.gson.ProblemsAllGson;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import com.devyy.openyspider.integration.leetcode.mapper.ILeetCodeProblemDetailMapper;
+import com.devyy.openyspider.integration.leetcode.mapper.ILeetCodeProblemMapper;
+import com.devyy.openyspider.integration.leetcode.mapper.ILeetcodeImageMapper;
+import com.devyy.openyspider.integration.leetcode.service.ILeetcodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -14,16 +22,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @since 2019-02-06
@@ -31,8 +41,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class LeetcodeService implements ILeetcodeService {
+    private static final String FILE_FOLDER_NAME = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Hub-beta/generator2";
+    private static final String URL_PATTERN = ("[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]");
 
-    private static final String FILE_FOLDER_NAME = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Hub/generator";
+    private static final int PAID_ONLY = 1;
 
     @Value("classpath:json/problems-all.json")
     private org.springframework.core.io.Resource problemAllJson;
@@ -40,13 +52,12 @@ public class LeetcodeService implements ILeetcodeService {
     @Value("classpath:json/getQuestionTranslation.json")
     private org.springframework.core.io.Resource getQuestionTranslationJson;
 
-    @Autowired
-    private Configuration configuration;
-
     @Resource
     private ILeetCodeProblemMapper leetCodeProblemMapper;
     @Resource
     private ILeetCodeProblemDetailMapper leetCodeProblemDetailMapper;
+    @Resource
+    private ILeetcodeImageMapper leetcodeImageMapper;
 
     @Override
     public String doScanProblems() {
@@ -119,7 +130,7 @@ public class LeetcodeService implements ILeetcodeService {
         this.waitSeconds(30);
 
         QueryWrapper<LeetCodeProblemDO> problemDOQueryWrapper = new QueryWrapper<>();
-        problemDOQueryWrapper.select().eq("paid_only", 0);
+        problemDOQueryWrapper.select().eq("paid_only", PAID_ONLY);
 
         leetCodeProblemMapper.selectList(problemDOQueryWrapper).forEach(leetCodeProblemDO -> {
             String url = "https://leetcode-cn.com/problems/" + leetCodeProblemDO.getTitleSlug();
@@ -148,139 +159,6 @@ public class LeetcodeService implements ILeetcodeService {
     }
 
     @Override
-    public String doGeneratorMarkdownFiles() {
-        QueryWrapper<LeetCodeProblemDO> problemDOQueryWrapper = new QueryWrapper<>();
-        problemDOQueryWrapper.select()
-                .eq("paid_only", 0)
-                .eq("has_bug", 0)
-                .orderByAsc("question_id");
-        leetCodeProblemMapper.selectList(problemDOQueryWrapper).forEach(leetCodeProblemDO -> {
-            final Long questionId = leetCodeProblemDO.getQuestionId();
-            final String feQuestionId = leetCodeProblemDO.getFeQuestionId();
-
-            QueryWrapper<LeetCodeProblemDetailDO> detailDOQueryWrapper = new QueryWrapper<>();
-            detailDOQueryWrapper.select().eq("question_id", questionId);
-            LeetCodeProblemDetailDO detailDO = leetCodeProblemDetailMapper.selectOne(detailDOQueryWrapper);
-
-            Map<String, String> ftlParams = new HashMap<>();
-            ftlParams.put("feQuestionId", feQuestionId);
-            ftlParams.put("titleCn", leetCodeProblemDO.getTitleCn());
-            ftlParams.put("titleSlug", leetCodeProblemDO.getTitleSlug());
-            if (Objects.nonNull(detailDO)) {
-                // fix 样式
-                String htmlContent = detailDO.getHtmlContent()
-                        .replaceAll("<pre>", "<pre class=\"language-text\">");
-                ftlParams.put("htmlContent", htmlContent);
-            }
-
-            try {
-                Template template = configuration.getTemplate("leetcodeMarkdown.ftl");
-                String mdContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, ftlParams);
-                // 文件名 eg. leetcode_1344_jump-game-v.md
-                String fileName = "leetcode_" + feQuestionId + "_" + leetCodeProblemDO.getTitleSlug() + ".md";
-                String fileFolder = FILE_FOLDER_NAME + getSidebarSliceByFeQuestionId(feQuestionId);
-                String filePath = fileFolder + fileName;
-                // 若文件夹路径不存在，则新建
-                File file = new File(fileFolder);
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
-                        log.error("==>localFolder={} 创建文件路径失败", fileFolder);
-                    }
-                }
-                FileUtils.writeStringToFile(new File(filePath), mdContent, "UTF-8");
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
-        return "success";
-    }
-
-    @Override
-    public String doGeneratorSidebarFiles() {
-        List<LeetcodeSideBarEnum> leetcodeSideBarEnums = LeetcodeSideBarEnum.getEnums();
-        leetcodeSideBarEnums.forEach(enums -> {
-            // 列出指定路径下全部文件名
-            String filePath = FILE_FOLDER_NAME + enums.getSidebarSlice();
-            Collection files = FileUtils.listFiles(new File(filePath), new String[]{"md"}, false);
-            List<String> fileNames = new ArrayList<>();
-            for (Object file : files) {
-                if (file instanceof File) {
-                    fileNames.add(((File) file).getName());
-                }
-            }
-            // 按 windows 文件系统自然顺序排序
-            fileNames.sort((o1, o2) -> {
-                String[] o1Arr = o1.split("_");
-                String[] o2Arr = o2.split("_");
-                if (StringUtils.isNumeric(o1Arr[1]) && StringUtils.isNumeric(o2Arr[1])) {
-                    int num1 = Integer.parseInt(o1Arr[1]);
-                    int num2 = Integer.parseInt(o2Arr[1]);
-                    return Integer.compare(num1, num2);
-                } else {
-                    return o1.compareTo(o2);
-                }
-            });
-
-            Map<String, Object> ftlParams = new HashMap<>();
-            ftlParams.put("sidebarSlice", enums.getSidebarSlice());
-            ftlParams.put("fileNames", fileNames);
-
-            try {
-                Template template = configuration.getTemplate("leetcodeSidebarModule.ftl");
-                String mdContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, ftlParams);
-                // 文件名 eg. sidebarOf001To100.js
-                String fileName = enums.getJsModuleName() + ".js";
-                String fileFolder = FILE_FOLDER_NAME + "/sidebar/";
-                String filePath2 = fileFolder + fileName;
-                // 若文件夹路径不存在，则新建
-                File file = new File(fileFolder);
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
-                        log.error("==>localFolder={} 创建文件路径失败", fileFolder);
-                    }
-                }
-                FileUtils.writeStringToFile(new File(filePath2), mdContent, "UTF-8");
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-        });
-        return "success";
-    }
-
-    @Override
-    public String doGeneratorGitCommitCmd() {
-        List<LeetcodeSideBarEnum> leetcodeSideBarEnums = LeetcodeSideBarEnum.getEnums();
-        leetcodeSideBarEnums.forEach(enums -> {
-            // 列出指定路径下全部文件名
-            String filePath = FILE_FOLDER_NAME + enums.getSidebarSlice();
-            Collection files = FileUtils.listFiles(new File(filePath), new String[]{"md"}, false);
-            List<String> fileNames = new ArrayList<>();
-            for (Object file : files) {
-                if (file instanceof File) {
-                    fileNames.add(((File) file).getName());
-                }
-            }
-
-            Map<String, Object> ftlParams = new HashMap<>();
-            ftlParams.put("sidebarSlice", enums.getSidebarSlice());
-            ftlParams.put("fileNames", fileNames);
-
-            try {
-                Template template = configuration.getTemplate("leetcodeGitCommand.ftl");
-                String mdContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, ftlParams);
-                // 文件名 eg. sidebarOf001To100.js
-                String fileName = enums.getJsModuleName() + ".sh";
-                String filePath2 = FILE_FOLDER_NAME + "/" + fileName;
-
-                FileUtils.writeStringToFile(new File(filePath2), mdContent, "UTF-8");
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-        });
-        return "success";
-    }
-
-    @Override
     public String doTestVuePressBugs() {
         System.setProperty("webdriver.chrome.driver", "C:/Users/DEVYY/Documents/chromedriver_win32/chromedriver.exe");
         WebDriver webDriver = new ChromeDriver();
@@ -290,7 +168,7 @@ public class LeetcodeService implements ILeetcodeService {
 
         QueryWrapper<LeetCodeProblemDO> problemDOQueryWrapper = new QueryWrapper<>();
         problemDOQueryWrapper.select()
-                .eq("paid_only", 0)
+                .eq("paid_only", PAID_ONLY)
                 .isNull("has_bug")
                 .orderByAsc("question_id");
         leetCodeProblemMapper.selectList(problemDOQueryWrapper).forEach(leetCodeProblemDO -> {
@@ -355,5 +233,114 @@ public class LeetcodeService implements ILeetcodeService {
         } catch (InterruptedException e) {
             log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public String doScanAlbums() {
+        return null;
+    }
+
+    private static final String URL1 = "https://s3-lc-upload.s3.amazonaws.com";
+    private static final String URL2 = "https://assets.leetcode-cn.com";
+    private static final String URL3 = "https://assets.leetcode.com";
+    private static final String URL4 = "https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com";
+    private static final String URL5 = "https://upload.wikimedia.org";
+    private static final String URL6 = "http://upload.wikimedia.org";
+    private static final Pattern URL_PATTERN1 = Pattern.compile(URL1 + URL_PATTERN);
+    private static final Pattern URL_PATTERN2 = Pattern.compile(URL2 + URL_PATTERN);
+    private static final Pattern URL_PATTERN3 = Pattern.compile(URL3 + URL_PATTERN);
+    private static final Pattern URL_PATTERN4 = Pattern.compile(URL4 + URL_PATTERN);
+    private static final Pattern URL_PATTERN5 = Pattern.compile(URL5 + URL_PATTERN);
+    private static final Pattern URL_PATTERN6 = Pattern.compile(URL6 + URL_PATTERN);
+
+
+    @Override
+    public String doScanImages() {
+        Pattern[] patterns = new Pattern[]{URL_PATTERN1, URL_PATTERN2, URL_PATTERN3, URL_PATTERN4, URL_PATTERN5, URL_PATTERN6};
+
+        Set<String> originUrls = new HashSet<>();
+        Set<String> remoteImgUrls = new HashSet<>();
+        Set<String> localImgNames = new HashSet<>();
+        leetCodeProblemDetailMapper.selectByMap(null).forEach(leetCodeProblemDetailDO -> {
+            String htmlContent = leetCodeProblemDetailDO.getHtmlContent();
+            for (Pattern pattern : patterns) {
+                Matcher matcher = pattern.matcher(htmlContent);
+                if (matcher.find()) {
+                    String originUrl = matcher.group();
+                    originUrls.add(originUrl);
+                    log.info("==>questionId={} url={}", leetCodeProblemDetailDO.getQuestionId(), originUrl);
+                    if (originUrl.endsWith(".PNG") || originUrl.endsWith(".png")
+                            || originUrl.endsWith(".JPG") || originUrl.endsWith(".jpg") || originUrl.endsWith(".JPEG") || originUrl.endsWith(".jpeg")
+                            || originUrl.endsWith(".GIF") || originUrl.endsWith(".gif")) {
+                        remoteImgUrls.add(originUrl);
+
+                        LeetcodeImageDO leetcodeImageDO = new LeetcodeImageDO();
+                        leetcodeImageDO.setQuestionId(leetCodeProblemDetailDO.getQuestionId());
+                        leetcodeImageDO.setImgUrl(originUrl);
+
+                        String localImgName = originUrl.replace(URL1, "")
+                                .replace(URL2, "")
+                                .replace(URL3, "")
+                                .replace(URL4, "")
+                                .replace(URL5, "")
+                                .replace(URL6, "");
+                        log.info(localImgName);
+                        localImgNames.add(localImgName);
+
+                        leetcodeImageDO.setImgName(localImgName);
+
+                        QueryWrapper<LeetcodeImageDO> queryWrapper = new QueryWrapper<>();
+                        queryWrapper.select().eq("img_url", originUrl);
+                        if (Objects.isNull(leetcodeImageMapper.selectOne(queryWrapper))) {
+                            leetcodeImageMapper.insert(leetcodeImageDO);
+                        }
+                    }
+                }
+            }
+        });
+        log.info("==>originUrls.size()={}", originUrls.size());
+        log.info("==>remoteImgUrls.size()={}", remoteImgUrls.size());
+        log.info("==>localImgNames.size()={}", localImgNames.size());
+        return "success";
+    }
+
+    @Override
+    public String doDownload() {
+        ExecutorService service = Executors.newFixedThreadPool(4);
+        QueryWrapper<LeetcodeImageDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select().eq("state", StateTypeEnum.STARTED.getSeq());
+        leetcodeImageMapper.selectList(queryWrapper).forEach(leetcodeImageDO -> {
+            String onlinePath = leetcodeImageDO.getImgUrl();
+            String imgName = leetcodeImageDO.getImgName();
+            String[] imgNameArr = imgName.split("/");
+            String imageName = imgNameArr[imgNameArr.length - 1];
+            String localFolder = FILE_FOLDER_NAME + imgName.replace(imageName, "");
+            String localPath = FILE_FOLDER_NAME + imgName;
+
+            // 若文件夹路径不存在，则新建
+            File file = new File(localFolder);
+            if (!file.exists()) {
+                if (!file.mkdirs()) {
+                    log.error("==>localFolder={} 创建文件路径失败", localFolder);
+                }
+            }
+            service.execute(() -> {
+                // 下载中-便于线程宕掉后回溯
+                leetcodeImageDO.setState(StateTypeEnum.DOWNLOADING.getSeq());
+                leetcodeImageMapper.updateById(leetcodeImageDO);
+                // 下载
+                if (ReptileUtil.ioDownload(onlinePath, localPath)) {
+                    leetcodeImageDO.setState(StateTypeEnum.DONE.getSeq());
+                } else {
+                    leetcodeImageDO.setState(StateTypeEnum.STARTED.getSeq());
+                }
+                leetcodeImageMapper.updateById(leetcodeImageDO);
+            });
+//            if (ReptileUtil.ioDownload(onlinePath, localPath)) {
+//                leetcodeImageDO.setState(StateTypeEnum.DONE.getSeq());
+//            }
+//            leetcodeImageMapper.updateById(leetcodeImageDO);
+        });
+        return "success";
     }
 }

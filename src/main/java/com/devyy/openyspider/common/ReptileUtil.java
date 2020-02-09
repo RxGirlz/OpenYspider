@@ -43,6 +43,7 @@ public class ReptileUtil {
             con.setConnectTimeout(5 * 1000);
             // 5min
             con.setReadTimeout(5 * 60 * 1000);
+//            con.setReadTimeout(30 * 1000);
             DataInputStream dataInputStream = new DataInputStream(con.getInputStream());
 
             ByteArrayOutputStream output = new ByteArrayOutputStream();

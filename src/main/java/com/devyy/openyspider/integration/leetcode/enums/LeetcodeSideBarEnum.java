@@ -1,4 +1,4 @@
-package com.devyy.openyspider.integration.leetcode;
+package com.devyy.openyspider.integration.leetcode.enums;
 
 import lombok.Getter;
 

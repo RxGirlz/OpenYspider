@@ -128,10 +128,22 @@ CREATE TABLE `tbl_leetcode_problem` (
 CREATE TABLE `tbl_leetcode_problem_detail` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `question_id` bigint(20) NOT NULL COMMENT '问题 ID',
-  `html_content` text NOT NULL COMMENT '问题前端 ID',
+  `html_content` text NOT NULL COMMENT 'HTML 问题内容',
   PRIMARY KEY (`id`),
   UNIQUE KEY `question_id_UNIQUE` (`question_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+-- tbl_leetcode_image
+CREATE TABLE `tbl_leetcode_image` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `img_name` varchar(255) DEFAULT NULL COMMENT '图片本地名',
+  `img_url` varchar(255) DEFAULT NULL COMMENT '图片远端名',
+  `question_id` bigint(20) NOT NULL COMMENT '问题 ID',
+  `state` int(11) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `img_url_UNIQUE` (`img_url`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
 ```
 
 ## 部分成果展示

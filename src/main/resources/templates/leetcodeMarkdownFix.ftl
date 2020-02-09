@@ -4,7 +4,7 @@
 
 ---
 
-${htmlContent}
+<Cards card="leetcode_${feQuestionId}_${titleSlug}"></Cards>
 
 ---
 

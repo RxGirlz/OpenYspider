@@ -1,4 +1,4 @@
-package com.devyy.openyspider.integration.leetcode;
+package com.devyy.openyspider.integration.leetcode.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

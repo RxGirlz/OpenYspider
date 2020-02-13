@@ -56,4 +56,10 @@ public class LeetcodeController {
     public String step6() {
         return leetcodeService.doDownload();
     }
+
+    @ApiOperation(value = "扫描 Text 文本内容")
+    @PostMapping("/step7")
+    public String step7() {
+        return leetcodeService.doScanTextContents();
+    }
 }

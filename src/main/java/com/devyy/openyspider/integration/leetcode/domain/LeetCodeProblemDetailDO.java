@@ -27,8 +27,13 @@ public class LeetCodeProblemDetailDO {
     @TableField("question_id")
     private Long questionId;
     /**
-     * 问题 前端 ID eg. "1"
+     * HTML 问题内容
      */
     @TableField("html_content")
     private String htmlContent;
+    /**
+     * TXT 问题内容
+     */
+    @TableField("txt_content")
+    private String txtContent;
 }

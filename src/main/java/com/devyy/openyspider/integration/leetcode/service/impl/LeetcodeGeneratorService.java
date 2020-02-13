@@ -3,6 +3,7 @@ package com.devyy.openyspider.integration.leetcode.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.devyy.openyspider.integration.leetcode.domain.LeetCodeProblemDO;
 import com.devyy.openyspider.integration.leetcode.domain.LeetCodeProblemDetailDO;
+import com.devyy.openyspider.integration.leetcode.enums.LeetcodeDifficultyTypeEnum;
 import com.devyy.openyspider.integration.leetcode.enums.LeetcodeSideBarEnum;
 import com.devyy.openyspider.integration.leetcode.mapper.ILeetCodeProblemDetailMapper;
 import com.devyy.openyspider.integration.leetcode.mapper.ILeetCodeProblemMapper;
@@ -21,6 +22,8 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
 
+import com.devyy.openyspider.integration.leetcode.service.impl.LeetcodeService;
+
 /**
  * @since 2019-02-09
  */
@@ -28,9 +31,9 @@ import java.util.*;
 @Component
 public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
 
-//         private static final String FILE_FOLDER_NAME = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Hub/docs";
-//    private static final String FILE_FOLDER_NAME = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Hub-beta/generator2";
-private static final String FILE_FOLDER_NAME = "C:\\Users\\DEVYY\\Documents\\GitHub\\翻译工程\\Leetcode-Hub\\docs\\.vuepress\\dist";
+    //         private static final String FILE_FOLDER_NAME = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Hub/docs";
+    private static final String FILE_FOLDER_NAME = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Hub-beta/generator";
+//    private static final String FILE_FOLDER_NAME = "C:\\Users\\DEVYY\\Documents\\GitHub\\翻译工程\\Leetcode-Hub\\docs\\.vuepress\\dist";
 
     private static final int PAID_ONLY = 1;
     private static final int HAS_BUG = 1;
@@ -54,7 +57,7 @@ private static final String FILE_FOLDER_NAME = "C:\\Users\\DEVYY\\Documents\\Git
         QueryWrapper<LeetCodeProblemDO> problemDOQueryWrapper = new QueryWrapper<>();
         problemDOQueryWrapper.select()
 //                .eq("paid_only", PAID_ONLY)
-                .eq("has_bug", HAS_BUG)
+//                .eq("has_bug", HAS_BUG)
                 .orderByAsc("question_id");
         leetCodeProblemMapper.selectList(problemDOQueryWrapper).forEach(leetCodeProblemDO -> {
             final Long questionId = leetCodeProblemDO.getQuestionId();
@@ -69,15 +72,32 @@ private static final String FILE_FOLDER_NAME = "C:\\Users\\DEVYY\\Documents\\Git
             ftlParams.put("feQuestionId", feQuestionId);
             ftlParams.put("titleCn", leetCodeProblemDO.getTitleCn());
             ftlParams.put("titleSlug", leetCodeProblemDO.getTitleSlug());
+            ftlParams.put("hasBug", Objects.equals(leetCodeProblemDO.getHasBug(), 1));
             if (Objects.nonNull(detailDO)) {
                 // fix 样式
                 String htmlContent = detailDO.getHtmlContent()
-                        .replaceAll("<pre>", "<pre class=\"language-text\">");
+                        .replaceAll("<pre>", "<pre class=\"language-text\">")
+                        .replaceAll(LeetcodeService.URL1, "")
+                        .replaceAll(LeetcodeService.URL2, "")
+                        .replaceAll(LeetcodeService.URL3, "")
+                        .replaceAll(LeetcodeService.URL4, "")
+                        .replaceAll(LeetcodeService.URL5, "")
+                        .replaceAll(LeetcodeService.URL6, "");
                 ftlParams.put("htmlContent", htmlContent);
+                String txtContent = detailDO.getTxtContent();
+                ftlParams.put("txtContent", txtContent);
+                if (Objects.nonNull(txtContent) && txtContent.contains("class")) {
+                    ftlParams.put("type", "java");
+                } else if (Objects.nonNull(txtContent) && txtContent.contains("MySQL")) {
+                    ftlParams.put("type", "sql");
+                } else {
+                    ftlParams.put("type", "");
+                }
+                ftlParams.put("difficulty", LeetcodeDifficultyTypeEnum.getEnumBySeq(leetCodeProblemDO.getDifficulty()).getDesc());
             }
 
             try {
-                Template template = configuration.getTemplate(HAS_BUG == 0 ? "leetcodeMarkdown.ftl" : "leetcodeMarkdownFix.ftl");
+                Template template = configuration.getTemplate("leetcodeMarkdown.ftl");
                 String mdContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, ftlParams);
                 // 文件名 eg. leetcode_1344_jump-game-v.md
                 String fileName = "leetcode_" + feQuestionId + "_" + leetCodeProblemDO.getTitleSlug() + ".md";
@@ -175,7 +195,7 @@ private static final String FILE_FOLDER_NAME = "C:\\Users\\DEVYY\\Documents\\Git
                 List<String> fileNames = new ArrayList<>();
                 for (Object file : files) {
                     if (file instanceof File) {
-                        fileNames.add(((File) file).getName().replace(".md",""));
+                        fileNames.add(((File) file).getName().replace(".md", ""));
                     }
                 }
 

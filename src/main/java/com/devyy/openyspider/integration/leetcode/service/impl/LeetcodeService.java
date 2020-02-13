@@ -1,5 +1,6 @@
 package com.devyy.openyspider.integration.leetcode.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.devyy.openyspider.base.StateTypeEnum;
@@ -71,6 +72,7 @@ public class LeetcodeService implements ILeetcodeService {
 
         if (Objects.nonNull(problemsAllGson)) {
             // 1345
+            // 1429
             problemsAllGson.getStat_status_pairs().forEach(statStatusPairsBean -> {
                 ProblemsAllGson.StatStatusPairsBean.StatBean statBean = statStatusPairsBean.getStat();
                 ProblemsAllGson.StatStatusPairsBean.DifficultyBean difficultyBean = statStatusPairsBean.getDifficulty();
@@ -84,7 +86,12 @@ public class LeetcodeService implements ILeetcodeService {
                         .difficulty(difficultyBean.getLevel())
                         .build();
 
-                leetCodeProblemMapper.insert(leetCodeProblemDO);
+                QueryWrapper<LeetCodeProblemDO> queryWrapper = new QueryWrapper<>();
+                queryWrapper.select().eq("question_id", statBean.getQuestion_id());
+                if (Objects.isNull(leetCodeProblemMapper.selectOne(queryWrapper))) {
+                    leetCodeProblemMapper.insert(leetCodeProblemDO);
+                    log.info("==>录入 LeetCodeProblemDO={}", JSON.toJSONString(leetCodeProblemDO));
+                }
             });
         }
         return "success";
@@ -124,38 +131,71 @@ public class LeetcodeService implements ILeetcodeService {
         System.setProperty("webdriver.chrome.driver", "C:/Users/DEVYY/Documents/chromedriver_win32/chromedriver.exe");
         WebDriver webDriver = new ChromeDriver();
         // 设置超时时间为 10 s
-        webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        webDriver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
         webDriver.get("https://leetcode-cn.com/problems/two-sum/");
         // wait 30s 输入账号密码
         this.waitSeconds(30);
 
-        QueryWrapper<LeetCodeProblemDO> problemDOQueryWrapper = new QueryWrapper<>();
-        problemDOQueryWrapper.select().eq("paid_only", PAID_ONLY);
+        Set<Long> problemDetailQuestionIds = new HashSet<>();
+        leetCodeProblemDetailMapper.selectList(null).forEach(leetCodeProblemDetailDO -> {
+            problemDetailQuestionIds.add(leetCodeProblemDetailDO.getQuestionId());
+        });
 
-        leetCodeProblemMapper.selectList(problemDOQueryWrapper).forEach(leetCodeProblemDO -> {
-            String url = "https://leetcode-cn.com/problems/" + leetCodeProblemDO.getTitleSlug();
-            try {
-                log.info("==>url {}", url);
-                webDriver.get(url);
-            }
-            // 此处捕获所有 Throwable 因为并不需要关心，还会中断程序
-            catch (Throwable e) {
-                log.warn(e.getMessage().substring(0, 30));
-            }
+        leetCodeProblemMapper.selectList(null).forEach(leetCodeProblemDO -> {
+            Long questionId = leetCodeProblemDO.getQuestionId();
+            if (!problemDetailQuestionIds.contains(questionId)) {
+                String url = "https://leetcode-cn.com/problems/" + leetCodeProblemDO.getTitleSlug();
+                try {
+                    log.info("==>url {}", url);
+                    webDriver.get(url);
+                }
+                // 此处捕获所有 Throwable 因为并不需要关心，还会中断程序
+                catch (Throwable e) {
+                    log.warn(e.getMessage().substring(0, 30));
+                }
 
-            Document document = Jsoup.parse(webDriver.getPageSource());
-            if (Objects.nonNull(document)) {
-                String htmlContent = document.getElementsByClass("content__1Y2H").outerHtml();
-                log.info("==>htmlContent={}", htmlContent);
+                Document document = Jsoup.parse(webDriver.getPageSource());
+                if (Objects.nonNull(document)) {
+                    String htmlContent = document.getElementsByClass("content__1Y2H").outerHtml();
+                    log.info("==>htmlContent={}", htmlContent);
 
-                LeetCodeProblemDetailDO leetCodeProblemDetailDO = new LeetCodeProblemDetailDO();
-                leetCodeProblemDetailDO.setHtmlContent(htmlContent);
-                leetCodeProblemDetailDO.setQuestionId(leetCodeProblemDO.getQuestionId());
+                    LeetCodeProblemDetailDO leetCodeProblemDetailDO = new LeetCodeProblemDetailDO();
+                    leetCodeProblemDetailDO.setHtmlContent(htmlContent);
+                    leetCodeProblemDetailDO.setQuestionId(leetCodeProblemDO.getQuestionId());
 
-                leetCodeProblemDetailMapper.insert(leetCodeProblemDetailDO);
+                    leetCodeProblemDetailMapper.insert(leetCodeProblemDetailDO);
+                }
             }
         });
         return "success";
+    }
+
+    @Override
+    public String doScanTextContents() {
+        String localPath = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Txt/problem-code/";
+        for (int i = 1; i <= 1349; i++) {
+            String fileName = localPath + "J (" + i + ").txt";
+            try {
+                String fileContent = FileUtils.readFileToString(new File(fileName), "UTF-8");
+
+                QueryWrapper<LeetCodeProblemDO> queryWrapper = new QueryWrapper<>();
+                queryWrapper.select().eq("fe_question_id", i);
+                LeetCodeProblemDO leetCodeProblemDO = leetCodeProblemMapper.selectOne(queryWrapper);
+                if (Objects.nonNull(leetCodeProblemDO)) {
+                    QueryWrapper<LeetCodeProblemDetailDO> queryWrapper2 = new QueryWrapper<>();
+                    queryWrapper2.select().eq("question_id", leetCodeProblemDO.getQuestionId()).isNull("txt_content");
+                    LeetCodeProblemDetailDO leetCodeProblemDetailDO = leetCodeProblemDetailMapper.selectOne(queryWrapper2);
+                    if (Objects.nonNull(leetCodeProblemDetailDO)) {
+                        leetCodeProblemDetailDO.setTxtContent(fileContent);
+                        leetCodeProblemDetailMapper.updateById(leetCodeProblemDetailDO);
+                        log.info("==>txtContent={} insert", fileContent);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("==>i={} e={}", i, e.getMessage());
+            }
+        }
+        return null;
     }
 
     @Override
@@ -240,12 +280,12 @@ public class LeetcodeService implements ILeetcodeService {
         return null;
     }
 
-    private static final String URL1 = "https://s3-lc-upload.s3.amazonaws.com";
-    private static final String URL2 = "https://assets.leetcode-cn.com";
-    private static final String URL3 = "https://assets.leetcode.com";
-    private static final String URL4 = "https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com";
-    private static final String URL5 = "https://upload.wikimedia.org";
-    private static final String URL6 = "http://upload.wikimedia.org";
+    static final String URL1 = "https://s3-lc-upload.s3.amazonaws.com";
+    static final String URL2 = "https://assets.leetcode-cn.com";
+    static final String URL3 = "https://assets.leetcode.com";
+    static final String URL4 = "https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com";
+    static final String URL5 = "https://upload.wikimedia.org";
+    static final String URL6 = "http://upload.wikimedia.org";
     private static final Pattern URL_PATTERN1 = Pattern.compile(URL1 + URL_PATTERN);
     private static final Pattern URL_PATTERN2 = Pattern.compile(URL2 + URL_PATTERN);
     private static final Pattern URL_PATTERN3 = Pattern.compile(URL3 + URL_PATTERN);
@@ -265,12 +305,13 @@ public class LeetcodeService implements ILeetcodeService {
             String htmlContent = leetCodeProblemDetailDO.getHtmlContent();
             for (Pattern pattern : patterns) {
                 Matcher matcher = pattern.matcher(htmlContent);
-                if (matcher.find()) {
+                while (matcher.find()) {
                     String originUrl = matcher.group();
                     originUrls.add(originUrl);
                     log.info("==>questionId={} url={}", leetCodeProblemDetailDO.getQuestionId(), originUrl);
                     if (originUrl.endsWith(".PNG") || originUrl.endsWith(".png")
-                            || originUrl.endsWith(".JPG") || originUrl.endsWith(".jpg") || originUrl.endsWith(".JPEG") || originUrl.endsWith(".jpeg")
+                            || originUrl.endsWith(".JPG") || originUrl.endsWith(".jpg")
+                            || originUrl.endsWith(".JPEG") || originUrl.endsWith(".jpeg")
                             || originUrl.endsWith(".GIF") || originUrl.endsWith(".gif")) {
                         remoteImgUrls.add(originUrl);
 
@@ -308,7 +349,10 @@ public class LeetcodeService implements ILeetcodeService {
     public String doDownload() {
         ExecutorService service = Executors.newFixedThreadPool(4);
         QueryWrapper<LeetcodeImageDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select().eq("state", StateTypeEnum.STARTED.getSeq());
+        queryWrapper.select()
+                .eq("state", StateTypeEnum.STARTED.getSeq())
+//        .isNull("state")
+        ;
         leetcodeImageMapper.selectList(queryWrapper).forEach(leetcodeImageDO -> {
             String onlinePath = leetcodeImageDO.getImgUrl();
             String imgName = leetcodeImageDO.getImgName();
@@ -336,10 +380,6 @@ public class LeetcodeService implements ILeetcodeService {
                 }
                 leetcodeImageMapper.updateById(leetcodeImageDO);
             });
-//            if (ReptileUtil.ioDownload(onlinePath, localPath)) {
-//                leetcodeImageDO.setState(StateTypeEnum.DONE.getSeq());
-//            }
-//            leetcodeImageMapper.updateById(leetcodeImageDO);
         });
         return "success";
     }

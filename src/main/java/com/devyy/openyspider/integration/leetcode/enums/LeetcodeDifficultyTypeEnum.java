@@ -1,5 +1,6 @@
 package com.devyy.openyspider.integration.leetcode.enums;
 
+import com.devyy.openyspider.integration.meinvla.MeinvlaTypeEnum;
 import lombok.Getter;
 
 /**
@@ -28,5 +29,14 @@ public enum LeetcodeDifficultyTypeEnum {
     LeetcodeDifficultyTypeEnum(int seq, String desc) {
         this.seq = seq;
         this.desc = desc;
+    }
+
+    public static LeetcodeDifficultyTypeEnum getEnumBySeq(int seq) {
+        for (LeetcodeDifficultyTypeEnum typeEnum : values()) {
+            if (typeEnum.getSeq() == seq) {
+                return typeEnum;
+            }
+        }
+        throw new IndexOutOfBoundsException("enum out of bounds.");
     }
 }

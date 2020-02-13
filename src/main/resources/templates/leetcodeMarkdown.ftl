@@ -1,15 +1,16 @@
-# <#if paidOnly>$</#if>${feQuestionId}. ${titleCn}
+# <#if paidOnly>$</#if>${feQuestionId}. [${difficulty}] ${titleCn}
 
 **题目链接：**[https://leetcode-cn.com/problems/${titleSlug}](https://leetcode-cn.com/problems/${titleSlug})
 
 ---
 
-${htmlContent}
+<#if hasBug>
+<Cards card="leetcode_${feQuestionId}_${titleSlug}"></Cards>
+<#else>${htmlContent}
+</#if >
 
 ---
 
-**AC 代码：**
-
-```java
-
+```${type}
+${txtContent}
 ```

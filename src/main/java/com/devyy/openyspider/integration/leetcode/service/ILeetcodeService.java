@@ -28,6 +28,13 @@ public interface ILeetcodeService extends IBaseService {
     String doScanProblemsDetail();
 
     /**
+     * 扫描 Text 文本内容
+     *
+     * @return success
+     */
+    String doScanTextContents();
+
+    /**
      * 测试 Vuepress 渲染
      *
      * @return success

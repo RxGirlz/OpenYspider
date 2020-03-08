@@ -1,6 +1,6 @@
 package com.devyy.openyspider.integration.leetcode.controller;
 
-import com.devyy.openyspider.integration.leetcode.service.ILeetcodeService;
+import com.devyy.openyspider.integration.leetcode.service.ILeetcodeScannerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -19,47 +19,47 @@ import javax.annotation.Resource;
 @Api(tags = "Leetcode 爬虫")
 public class LeetcodeController {
     @Resource
-    private ILeetcodeService leetcodeService;
+    private ILeetcodeScannerService leetcodeScannerService;
 
     @ApiOperation(value = "扫描问题集")
     @PostMapping("/step1")
     public String step1() {
-        return leetcodeService.doScanProblems();
+        return leetcodeScannerService.doScanProblems();
     }
 
     @ApiOperation(value = "匹配中文标题")
     @PostMapping("/step2")
     public String step2() {
-        return leetcodeService.doScanTiTleCn();
+        return leetcodeScannerService.doScanTiTleCn();
     }
 
     @ApiOperation(value = "扫描问题题目")
     @PostMapping("/step3")
     public String step3() {
-        return leetcodeService.doScanProblemsDetail();
+        return leetcodeScannerService.doScanProblemsDetail();
     }
 
     @ApiOperation(value = "测试 Vuepress 渲染 Bug")
     @PostMapping("/step4")
     public String step4() {
-        return leetcodeService.doTestVuePressBugs();
+        return leetcodeScannerService.doTestVuePressBugs();
     }
 
     @ApiOperation(value = "扫描图片资源")
     @PostMapping("/step5")
     public String step5() {
-        return leetcodeService.doScanImages();
+        return leetcodeScannerService.doScanImages();
     }
 
     @ApiOperation(value = "下载图片")
     @PostMapping("/step6")
     public String step6() {
-        return leetcodeService.doDownload();
+        return leetcodeScannerService.doDownload();
     }
 
     @ApiOperation(value = "扫描 Text 文本内容")
     @PostMapping("/step7")
     public String step7() {
-        return leetcodeService.doScanTextContents();
+        return leetcodeScannerService.doScanTextContents();
     }
 }

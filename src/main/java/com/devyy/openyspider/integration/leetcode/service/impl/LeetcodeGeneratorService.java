@@ -8,6 +8,7 @@ import com.devyy.openyspider.integration.leetcode.enums.LeetcodeSideBarEnum;
 import com.devyy.openyspider.integration.leetcode.mapper.ILeetCodeProblemDetailMapper;
 import com.devyy.openyspider.integration.leetcode.mapper.ILeetCodeProblemMapper;
 import com.devyy.openyspider.integration.leetcode.service.ILeetcodeGeneratorService;
+import com.devyy.openyspider.integration.leetcode.service.LeetcodeHelper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
@@ -22,18 +23,12 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
 
-import com.devyy.openyspider.integration.leetcode.service.impl.LeetcodeService;
-
 /**
  * @since 2019-02-09
  */
 @Slf4j
 @Component
 public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
-
-    //         private static final String FILE_FOLDER_NAME = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Hub/docs";
-    private static final String FILE_FOLDER_NAME = "C:/Users/DEVYY/Documents/GitHub/翻译工程/Leetcode-Hub-beta/generator";
-//    private static final String FILE_FOLDER_NAME = "C:\\Users\\DEVYY\\Documents\\GitHub\\翻译工程\\Leetcode-Hub\\docs\\.vuepress\\dist";
 
     private static final int PAID_ONLY = 1;
     private static final int HAS_BUG = 1;
@@ -57,7 +52,11 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
         QueryWrapper<LeetCodeProblemDO> problemDOQueryWrapper = new QueryWrapper<>();
         problemDOQueryWrapper.select()
 //                .eq("paid_only", PAID_ONLY)
-//                .eq("has_bug", HAS_BUG)
+                .eq("has_bug", HAS_BUG)
+//                .isNull("has_bug")
+                .in("fe_question_id", "1360","1361","1362","1363","1352","1355")
+                // SELECT * FROM dev.tbl_leetcode_problem where  question_id > 1420 order by question_id asc;
+                .gt("question_id", 1457)
                 .orderByAsc("question_id");
         leetCodeProblemMapper.selectList(problemDOQueryWrapper).forEach(leetCodeProblemDO -> {
             final Long questionId = leetCodeProblemDO.getQuestionId();
@@ -77,12 +76,12 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
                 // fix 样式
                 String htmlContent = detailDO.getHtmlContent()
                         .replaceAll("<pre>", "<pre class=\"language-text\">")
-                        .replaceAll(LeetcodeService.URL1, "")
-                        .replaceAll(LeetcodeService.URL2, "")
-                        .replaceAll(LeetcodeService.URL3, "")
-                        .replaceAll(LeetcodeService.URL4, "")
-                        .replaceAll(LeetcodeService.URL5, "")
-                        .replaceAll(LeetcodeService.URL6, "");
+                        .replaceAll(LeetcodeHelper.URL1, "")
+                        .replaceAll(LeetcodeHelper.URL2, "")
+                        .replaceAll(LeetcodeHelper.URL3, "")
+                        .replaceAll(LeetcodeHelper.URL4, "")
+                        .replaceAll(LeetcodeHelper.URL5, "")
+                        .replaceAll(LeetcodeHelper.URL6, "");
                 ftlParams.put("htmlContent", htmlContent);
                 String txtContent = detailDO.getTxtContent();
                 ftlParams.put("txtContent", txtContent);
@@ -101,7 +100,7 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
                 String mdContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, ftlParams);
                 // 文件名 eg. leetcode_1344_jump-game-v.md
                 String fileName = "leetcode_" + feQuestionId + "_" + leetCodeProblemDO.getTitleSlug() + ".md";
-                String fileFolder = FILE_FOLDER_NAME + getSidebarSliceByFeQuestionId(feQuestionId);
+                String fileFolder = LeetcodeHelper.FILE_FOLDER_NAME + LeetcodeHelper.getSidebarSliceByFeQuestionId(feQuestionId);
                 String filePath = fileFolder + fileName;
                 // 若文件夹路径不存在，则新建
                 File file = new File(fileFolder);
@@ -123,7 +122,7 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
         List<LeetcodeSideBarEnum> leetcodeSideBarEnums = LeetcodeSideBarEnum.getEnums();
         leetcodeSideBarEnums.forEach(enums -> {
             // 列出指定路径下全部文件名
-            String filePath = FILE_FOLDER_NAME + enums.getSidebarSlice();
+            String filePath = LeetcodeHelper.FILE_FOLDER_NAME + enums.getSidebarSlice();
             log.info("==>filePath={}", filePath);
             Collection files = null;
             try {
@@ -160,7 +159,7 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
                     String mdContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, ftlParams);
                     // 文件名 eg. sidebarOf001To100.js
                     String fileName = enums.getJsModuleName() + ".js";
-                    String fileFolder = FILE_FOLDER_NAME + "/sidebar/";
+                    String fileFolder = LeetcodeHelper.FILE_FOLDER_NAME + "/sidebar/";
                     String filePath2 = fileFolder + fileName;
                     // 若文件夹路径不存在，则新建
                     File file = new File(fileFolder);
@@ -183,7 +182,7 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
         List<LeetcodeSideBarEnum> leetcodeSideBarEnums = LeetcodeSideBarEnum.getEnums();
         leetcodeSideBarEnums.forEach(enums -> {
             // 列出指定路径下全部文件名
-            String filePath = FILE_FOLDER_NAME + enums.getSidebarSlice();
+            String filePath = LeetcodeHelper.FILE_FOLDER_NAME + enums.getSidebarSlice();
             log.info("==>filePath={}", filePath);
             Collection files = null;
             try {
@@ -208,7 +207,7 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
                     String mdContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, ftlParams);
                     // 文件名 eg. sidebarOf001To100.js
                     String fileName = enums.getJsModuleName() + ".sh";
-                    String filePath2 = FILE_FOLDER_NAME + "/" + fileName;
+                    String filePath2 = LeetcodeHelper.FILE_FOLDER_NAME + "/" + fileName;
 
                     FileUtils.writeStringToFile(new File(filePath2), mdContent, "UTF-8");
                 } catch (Exception e) {
@@ -225,6 +224,8 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
         QueryWrapper<LeetCodeProblemDO> problemDOQueryWrapper = new QueryWrapper<>();
         problemDOQueryWrapper.select()
                 .eq("has_bug", HAS_BUG)
+                .in("fe_question_id", "1360","1361","1362","1363","1352","1355")
+                .gt("question_id", 1420)
                 .orderByAsc("question_id");
         leetCodeProblemMapper.selectList(problemDOQueryWrapper).forEach(leetCodeProblemDO -> {
             final Long questionId = leetCodeProblemDO.getQuestionId();
@@ -249,7 +250,7 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
                 String mdContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, ftlParams);
                 // 文件名 eg. leetcode_1344_jump-game-v.md
                 String fileName = "leetcode_" + feQuestionId + "_" + leetCodeProblemDO.getTitleSlug() + ".html";
-                String fileFolder = FILE_FOLDER_NAME + "/htmlSrc/";
+                String fileFolder = LeetcodeHelper.FILE_FOLDER_NAME + "/htmlSrc/";
                 String filePath = fileFolder + fileName;
                 // 若文件夹路径不存在，则新建
                 File file = new File(fileFolder);
@@ -266,23 +267,5 @@ public class LeetcodeGeneratorService implements ILeetcodeGeneratorService {
         return "success";
     }
 
-    /**
-     * 根据 feQuestionId 获取 SidebarSlice
-     *
-     * @param feQuestionId feQuestionId
-     * @return SidebarSlice
-     */
-    private String getSidebarSliceByFeQuestionId(String feQuestionId) {
-        List<LeetcodeSideBarEnum> leetcodeSideBarEnums = LeetcodeSideBarEnum.getEnums();
-        if (StringUtils.isNumeric(feQuestionId)) {
-            int feQuestionIdNum = Integer.parseInt(feQuestionId);
-            for (LeetcodeSideBarEnum leetcodeSideBarEnum : leetcodeSideBarEnums) {
-                if (leetcodeSideBarEnum.getStartSeq() <= feQuestionIdNum
-                        && feQuestionIdNum <= leetcodeSideBarEnum.getEndSeq()) {
-                    return leetcodeSideBarEnum.getSidebarSlice();
-                }
-            }
-        }
-        return LeetcodeSideBarEnum.SIDEBAR_1301_1400.getSidebarSlice();
-    }
+
 }

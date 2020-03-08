@@ -5,7 +5,7 @@ import com.devyy.openyspider.base.IBaseService;
 /**
  * @since 2019-02-06
  */
-public interface ILeetcodeService extends IBaseService {
+public interface ILeetcodeScannerService extends IBaseService {
     /**
      * 扫描问题集
      *

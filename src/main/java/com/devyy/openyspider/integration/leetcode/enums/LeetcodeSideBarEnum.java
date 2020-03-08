@@ -27,7 +27,7 @@ public enum LeetcodeSideBarEnum {
     SIDEBAR_1101_1200(1101, 1200),
     SIDEBAR_1201_1300(1201, 1300),
     SIDEBAR_1301_1400(1301, 1400),
-
+    SIDEBAR_INTERVIEW(-1, -1),
     ;
 
     /**
@@ -53,6 +53,9 @@ public enum LeetcodeSideBarEnum {
         if (startSeq == 1) {
             this.sidebarSlice = "/001-" + endSeq + "/";
             this.jsModuleName = "sidebarOf001To" + endSeq;
+        } else if (startSeq == -1) {
+            this.sidebarSlice = "/interviews/";
+            this.jsModuleName = "sidebarOfInterviews";
         } else {
             this.sidebarSlice = "/" + startSeq + "-" + endSeq + "/";
             this.jsModuleName = "sidebarOf" + startSeq + "To" + endSeq;

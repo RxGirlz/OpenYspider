@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.devyy</groupId>
-            <artifactId>oys-leetcode</artifactId>
+            <artifactId>oys-leetcode-presenter-cloud</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>

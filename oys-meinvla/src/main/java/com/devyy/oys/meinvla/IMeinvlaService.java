@@ -1,7 +1,7 @@
 package com.devyy.oys.meinvla;
 
 
-import com.devyy.oys.core.base.IBaseService;
+import com.devyy.oys.srarter.core.base.IBaseService;
 
 /**
  * @since 2019-12-01

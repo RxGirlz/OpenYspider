@@ -11,5 +11,11 @@
 
     <artifactId>oys-leetcode-core</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.devyy</groupId>
+            <artifactId>oys-core</artifactId>
+            <version>${revision}</version>
+        </dependency>
+    </dependencies>
 </project>

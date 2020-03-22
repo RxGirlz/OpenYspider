@@ -1,4 +1,4 @@
-package com.devyy.oys.core.enums;
+package com.devyy.oys.srarter.core.enums;
 
 import lombok.Getter;
 

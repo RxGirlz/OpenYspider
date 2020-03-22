@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @TableName("tbl_yande_image")
-class YandeImageDO {
+public class YandeImageDO {
     @TableId(type = IdType.AUTO)
     private Long id;
 

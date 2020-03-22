@@ -1,4 +1,4 @@
-package com.devyy.oys.leetcode.presenter.cloud.web;
+package com.devyy.oys.srarter.leetcode.presenter.web;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/leetcode")
 @Api(tags = "Leetcode 爬虫")
-public interface ILeetcodeController {
+public interface ILeetcodeWeb {
 
     @ApiOperation(value = "扫描问题集")
     @PostMapping("/step1")

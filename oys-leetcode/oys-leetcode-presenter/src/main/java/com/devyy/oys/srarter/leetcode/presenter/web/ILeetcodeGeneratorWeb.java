@@ -1,4 +1,4 @@
-package com.devyy.oys.leetcode.presenter.cloud.web;
+package com.devyy.oys.srarter.leetcode.presenter.web;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/leetcode/generator")
 @Api(tags = "Leetcode 生成器")
-public interface ILeetcodeGeneratorController {
+public interface ILeetcodeGeneratorWeb {
 
     @ApiOperation(value = "批量生成 Markdown 文件")
     @PostMapping("/step1")

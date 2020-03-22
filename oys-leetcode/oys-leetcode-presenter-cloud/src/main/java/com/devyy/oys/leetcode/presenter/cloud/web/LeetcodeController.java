@@ -1,6 +1,7 @@
 package com.devyy.oys.leetcode.presenter.cloud.web;
 
-import com.devyy.oys.leetcode.presenter.service.ILeetcodeScannerService;
+import com.devyy.oys.srarter.leetcode.presenter.service.ILeetcodeScannerService;
+import com.devyy.oys.srarter.leetcode.presenter.web.ILeetcodeWeb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @since 2019-02-06
  */
 @Component
-public class LeetcodeController implements ILeetcodeController {
+public class LeetcodeController implements ILeetcodeWeb {
     @Autowired
     private ILeetcodeScannerService leetcodeScannerService;
 

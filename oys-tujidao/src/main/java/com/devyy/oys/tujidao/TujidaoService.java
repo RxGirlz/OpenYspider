@@ -1,8 +1,9 @@
 package com.devyy.oys.tujidao;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.devyy.oys.core.enums.StateTypeEnum;
-import com.devyy.oys.core.util.ReptileUtil;
+import com.devyy.oys.srarter.core.enums.StateTypeEnum;
+import com.devyy.oys.srarter.core.util.ReptileUtil;
+import com.devyy.oys.tujidao.dao.ITujidaoAlbumMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

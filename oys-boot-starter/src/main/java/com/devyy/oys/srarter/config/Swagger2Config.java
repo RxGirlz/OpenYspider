@@ -1,4 +1,4 @@
-package com.devyy.oys.config;
+package com.devyy.oys.srarter.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

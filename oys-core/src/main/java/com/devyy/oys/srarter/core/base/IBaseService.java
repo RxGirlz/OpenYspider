@@ -1,4 +1,4 @@
-package com.devyy.oys.core.base;
+package com.devyy.oys.srarter.core.base;
 
 /**
  * 基础接口

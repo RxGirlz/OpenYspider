@@ -11,8 +11,6 @@
 
     <artifactId>oys-leetcode-presenter-cloud</artifactId>
 
-    <packaging>pom</packaging>
-
     <dependencies>
         <dependency>
             <groupId>com.devyy</groupId>

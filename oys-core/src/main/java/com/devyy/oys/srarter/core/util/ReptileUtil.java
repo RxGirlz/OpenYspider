@@ -1,4 +1,4 @@
-package com.devyy.oys.core.util;
+package com.devyy.oys.srarter.core.util;
 
 import lombok.extern.slf4j.Slf4j;
 

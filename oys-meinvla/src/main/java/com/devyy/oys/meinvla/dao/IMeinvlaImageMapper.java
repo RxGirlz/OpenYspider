@@ -1,6 +1,7 @@
-package com.devyy.oys.meinvla;
+package com.devyy.oys.meinvla.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.devyy.oys.meinvla.MeinvlaImageDO;
 import org.springframework.stereotype.Repository;
 
 /**

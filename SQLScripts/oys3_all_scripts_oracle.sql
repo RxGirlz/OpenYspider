@@ -1,0 +1,271 @@
+/*==============================================================*/
+/* Table: OYS_LEETCODE_IMAGE                                    */
+/*==============================================================*/
+CREATE TABLE OYS_LEETCODE_IMAGE (
+   ID                   NUMBER(22,0)          NOT NULL,
+   IMG_NAME             VARCHAR2(255),
+   IMG_URL              VARCHAR2(255),
+   QUESTION_ID          NUMBER(22,0)          NOT NULL,
+   STATE                NUMBER(3,0),
+   CREATION_DATE        DATE                 DEFAULT SYSDATE,
+   LAST_UPDATED_BY      DATE                 DEFAULT SYSDATE,
+   CONSTRAINT PK_OYS_LEETCODE_IMAGE PRIMARY KEY (ID),
+   CONSTRAINT IMG_URL_UNIQUE UNIQUE (IMG_URL)
+);
+
+COMMENT ON COLUMN OYS_LEETCODE_IMAGE.ID IS
+'主键 ID';
+
+COMMENT ON COLUMN OYS_LEETCODE_IMAGE.IMG_NAME IS
+'图片本地名';
+
+COMMENT ON COLUMN OYS_LEETCODE_IMAGE.IMG_URL IS
+'图片远端名';
+
+COMMENT ON COLUMN OYS_LEETCODE_IMAGE.QUESTION_ID IS
+'问题 ID';
+
+COMMENT ON COLUMN OYS_LEETCODE_IMAGE.STATE IS
+'状态';
+
+COMMENT ON COLUMN OYS_LEETCODE_IMAGE.CREATION_DATE IS
+'创建时间';
+
+COMMENT ON COLUMN OYS_LEETCODE_IMAGE.LAST_UPDATED_BY IS
+'最后修改时间';
+
+/*==============================================================*/
+/* Table: OYS_LEETCODE_PROBLEM                                  */
+/*==============================================================*/
+CREATE TABLE OYS_LEETCODE_PROBLEM (
+   ID                   NUMBER(22,0)          NOT NULL,
+   TITLE                VARCHAR2(255),
+   TITLE_CN             VARCHAR2(255),
+   TITLE_SLUG           VARCHAR2(255),
+   PAID_ONLY            NUMBER(3,0),
+   QUESTION_ID          NUMBER(22,0)          NOT NULL,
+   FE_QUESTION_ID       VARCHAR2(64)          NOT NULL,
+   DIFFICULTY           NUMBER(3,0),
+   HAS_BUG              NUMBER(3,0),
+   CREATION_DATE        DATE                 DEFAULT SYSDATE,
+   LAST_UPDATED_BY      DATE                 DEFAULT SYSDATE,
+   CONSTRAINT PK_OYS_LEETCODE_PROBLEM PRIMARY KEY (ID),
+   CONSTRAINT QUESTION_ID_UNIQUE UNIQUE (QUESTION_ID)
+);
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.ID IS
+'主键 ID';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.TITLE IS
+'标题名';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.TITLE_CN IS
+'中文标题名';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.TITLE_SLUG IS
+'路径名';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.PAID_ONLY IS
+'是否付费';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.QUESTION_ID IS
+'问题 ID';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.FE_QUESTION_ID IS
+'问题前端 ID';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.DIFFICULTY IS
+'难度';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.HAS_BUG IS
+'是否存在渲染bug';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.CREATION_DATE IS
+'创建时间';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM.LAST_UPDATED_BY IS
+'最后修改时间';
+
+/*==============================================================*/
+/* Table: OYS_LEETCODE_PROBLEM_DETAIL                           */
+/*==============================================================*/
+CREATE TABLE OYS_LEETCODE_PROBLEM_DETAIL (
+   ID                   NUMBER(22,0)          NOT NULL,
+   QUESTION_ID          NUMBER(22,0)          NOT NULL,
+   HTML_CONTENT         CLOB                  NOT NULL,
+   TXT_CONTENT          CLOB                  NOT NULL,
+   CREATION_DATE        DATE                 DEFAULT SYSDATE,
+   LAST_UPDATED_BY      DATE                 DEFAULT SYSDATE,
+   CONSTRAINT PK_OYS_LEETCODE_PROBLEM_DETAIL PRIMARY KEY (ID),
+   CONSTRAINT QUESTION_ID_UNIQUE UNIQUE (QUESTION_ID)
+);
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM_DETAIL.ID IS
+'主键 ID';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM_DETAIL.QUESTION_ID IS
+'问题 ID';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM_DETAIL.HTML_CONTENT IS
+'HTML 问题内容';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM_DETAIL.TXT_CONTENT IS
+'TXT 问题内容';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM_DETAIL.CREATION_DATE IS
+'创建时间';
+
+COMMENT ON COLUMN OYS_LEETCODE_PROBLEM_DETAIL.LAST_UPDATED_BY IS
+'最后修改时间';
+
+/*==============================================================*/
+/* Table: OYS_MEINVLA_ALBUM                                     */
+/*==============================================================*/
+CREATE TABLE OYS_MEINVLA_ALBUM (
+   ID                   NUMBER(22,0)          NOT NULL,
+   STATE                NUMBER(3,0),
+   ALBUM_NAME           VARCHAR2(255),
+   ALBUM_ID             NUMBER(22,0),
+   TYPE                 NUMBER(3,0),
+   TOTAL                NUMBER(11,0),
+   CUR_TOTAL            NUMBER(11,0),
+   CREATION_DATE        DATE                 DEFAULT SYSDATE,
+   LAST_UPDATED_BY      DATE                 DEFAULT SYSDATE,
+   CONSTRAINT PK_OYS_MEINVLA_ALBUM PRIMARY KEY (ID),
+   CONSTRAINT ALBUM_ID_UNIQUE UNIQUE (ALBUM_ID)
+);
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.ID IS
+'主键 ID';
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.STATE IS
+'状态';
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.ALBUM_NAME IS
+'相册名';
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.ALBUM_ID IS
+'相册id';
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.TYPE IS
+'相册类型';
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.TOTAL IS
+'图片总数';
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.CUR_TOTAL IS
+'当前图片总数';
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.CREATION_DATE IS
+'创建时间';
+
+COMMENT ON COLUMN OYS_MEINVLA_ALBUM.LAST_UPDATED_BY IS
+'最后修改时间';
+
+/*==============================================================*/
+/* Table: OYS_MEINVLA_IMAGE                                     */
+/*==============================================================*/
+CREATE TABLE OYS_MEINVLA_IMAGE (
+   ID                   NUMBER(22,0)          NOT NULL,
+   IMG_NAME             VARCHAR2(64),
+   IMG_URL              VARCHAR2(500),
+   ALBUM_ID             NUMBER(22,0),
+   STATE                NUMBER(3,0),
+   CREATION_DATE        DATE                 DEFAULT SYSDATE,
+   LAST_UPDATED_BY      DATE                 DEFAULT SYSDATE,
+   CONSTRAINT PK_OYS_MEINVLA_IMAGE PRIMARY KEY (ID),
+   CONSTRAINT IMG_NAEM_UNIQUE UNIQUE (IMG_NAME)
+);
+
+COMMENT ON COLUMN OYS_MEINVLA_IMAGE.ID IS
+'主键 ID';
+
+COMMENT ON COLUMN OYS_MEINVLA_IMAGE.IMG_NAME IS
+'图片本地名';
+
+COMMENT ON COLUMN OYS_MEINVLA_IMAGE.IMG_URL IS
+'图片远端名';
+
+COMMENT ON COLUMN OYS_MEINVLA_IMAGE.ALBUM_ID IS
+'相册id';
+
+COMMENT ON COLUMN OYS_MEINVLA_IMAGE.STATE IS
+'状态';
+
+COMMENT ON COLUMN OYS_MEINVLA_IMAGE.CREATION_DATE IS
+'创建时间';
+
+COMMENT ON COLUMN OYS_MEINVLA_IMAGE.LAST_UPDATED_BY IS
+'最后修改时间';
+
+/*==============================================================*/
+/* Table: OYS_TUJIDAO_ALBUM                                     */
+/*==============================================================*/
+CREATE TABLE OYS_TUJIDAO_ALBUM (
+   ID                   NUMBER(22,0)          NOT NULL,
+   STATE                NUMBER(3,0),
+   TOTAL                NUMBER(11,0),
+   ALBUM_NAME           VARCHAR2(255),
+   ALBUM_ID             NUMBER(22,0),
+   TYPE                 NUMBER(3,0),
+   CREATION_DATE        DATE                 DEFAULT SYSDATE,
+   LAST_UPDATED_BY      DATE                 DEFAULT SYSDATE,
+   CONSTRAINT PK_OYS_TUJIDAO_ALBUM PRIMARY KEY (ID),
+   CONSTRAINT ALBUM_ID_UNIQUE UNIQUE (ALBUM_ID)
+);
+
+COMMENT ON COLUMN OYS_TUJIDAO_ALBUM.ID IS
+'主键 ID';
+
+COMMENT ON COLUMN OYS_TUJIDAO_ALBUM.STATE IS
+'状态';
+
+COMMENT ON COLUMN OYS_TUJIDAO_ALBUM.TOTAL IS
+'图片总数';
+
+COMMENT ON COLUMN OYS_TUJIDAO_ALBUM.ALBUM_NAME IS
+'相册名';
+
+COMMENT ON COLUMN OYS_TUJIDAO_ALBUM.ALBUM_ID IS
+'相册id';
+
+COMMENT ON COLUMN OYS_TUJIDAO_ALBUM.TYPE IS
+'相册类型';
+
+COMMENT ON COLUMN OYS_TUJIDAO_ALBUM.CREATION_DATE IS
+'创建时间';
+
+COMMENT ON COLUMN OYS_TUJIDAO_ALBUM.LAST_UPDATED_BY IS
+'最后修改时间';
+
+/*==============================================================*/
+/* Table: OYS_YANDE_IMAGE                                       */
+/*==============================================================*/
+CREATE TABLE OYS_YANDE_IMAGE (
+   ID                   NUMBER(22,0)          NOT NULL,
+   IMG_NAME             VARCHAR2(10),
+   IMG_URL              VARCHAR2(500),
+   STATE                NUMBER(3,0),
+   CREATION_DATE        DATE                 DEFAULT SYSDATE,
+   LAST_UPDATED_BY      DATE                 DEFAULT SYSDATE,
+   CONSTRAINT PK_OYS_YANDE_IMAGE PRIMARY KEY (ID),
+   CONSTRAINT IMG_NAEM_UNIQUE UNIQUE (IMG_NAME)
+);
+
+COMMENT ON COLUMN OYS_YANDE_IMAGE.ID IS
+'主键 ID';
+
+COMMENT ON COLUMN OYS_YANDE_IMAGE.IMG_NAME IS
+'图片本地名';
+
+COMMENT ON COLUMN OYS_YANDE_IMAGE.IMG_URL IS
+'图片远端名';
+
+COMMENT ON COLUMN OYS_YANDE_IMAGE.STATE IS
+'状态';
+
+COMMENT ON COLUMN OYS_YANDE_IMAGE.CREATION_DATE IS
+'创建时间';
+
+COMMENT ON COLUMN OYS_YANDE_IMAGE.LAST_UPDATED_BY IS
+'最后修改时间';

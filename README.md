@@ -1,4 +1,4 @@
-# OpenYspider 2.x
+# OpenYspider 3.x
 
 千万级图片、视频爬虫 [开源版本]：`tujidao.com`、`yande.re`、`meinvla.net`
 
@@ -6,16 +6,13 @@
 
 注: `tangyun365.com`、`yalayi.com`、`rosmm88.com`、`mzsock.com`、`m7.22c.im` 请切换至 `1.x` 分支查看。
 
-## 2.x 版本新特性
+## 3.x 版本新特性
 
-1. `Spring Boot` 版本升级: `2.1.8` => `2.2.1`
-2. `jdk` 版本升级: `1.8` => `11`
-3. `MySQL` 版本升级: `5.7` => `8.0`
-4. `ORM` 框架调整: `JPA` => `Mybatis-Plus`
-5. 引入 `swagger-ui` 最新版 `2.9.2`
-6. 新增 `tujidao` 预下载特性
-7. 移除 `llys、mzsock、rosi、tangyun、yalayi`
-8. 数倍性能提升、数量级提升: `百万级` => `千万级`
+1. `Spring Boot` 版本升级: `2.2.1` => `2.2.4`
+2. `MySQL` 版本升级: `5.7` => `8.0`
+3. 适配 Oracle
+4. 工程模块化
+5. 数据库全量脚本规范化
 
 ## 使用
 
@@ -62,89 +59,10 @@ System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 
 ## SQL 建表语句
 
-```sql
--- tbl_tujidao_album
-CREATE TABLE `tbl_tujidao_album` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `state` int(11) DEFAULT NULL COMMENT '状态',
-  `total` int(11) DEFAULT NULL COMMENT '图片总数',
-  `album_name` varchar(255) DEFAULT NULL COMMENT '相册名',
-  `album_id` int(11) DEFAULT NULL COMMENT '相册id',
-  `type` int(11) DEFAULT NULL COMMENT '相册类型',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `album_id_UNIQUE` (`album_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+详见 [SQLScripts](./SQLScripts/) 目录
 
--- tbl_yande_image
-CREATE TABLE `tbl_yande_image` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `img_name` varchar(10) DEFAULT NULL COMMENT '图片本地名',
-  `img_url` varchar(500) DEFAULT NULL COMMENT '图片远端名',
-  `state` int(11) DEFAULT NULL COMMENT '状态',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `img_naem_UNIQUE` (`img_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
--- tbl_meinvla_album
-CREATE TABLE `tbl_meinvla_album` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `state` int(11) DEFAULT NULL COMMENT '状态',
-  `album_name` varchar(255) DEFAULT NULL COMMENT '相册名',
-  `album_id` int(11) DEFAULT NULL COMMENT '相册id',
-  `type` int(11) DEFAULT NULL COMMENT '相册类型',
-  `total` INT(11) NULL COMMENT '图片总数',
-  `cur_total` INT(11) NULL COMMENT '当前图片总数',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `album_id_UNIQUE` (`album_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
--- tbl_meinvla_image
-CREATE TABLE `tbl_meinvla_image` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `img_name` varchar(64) DEFAULT NULL COMMENT '图片本地名',
-  `img_url` varchar(500) DEFAULT NULL COMMENT '图片远端名',
-  `album_id` int(11) DEFAULT NULL COMMENT '相册id',
-  `state` int(11) DEFAULT NULL COMMENT '状态',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `img_naem_UNIQUE` (`img_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
--- tbl_leetcode_problem
-CREATE TABLE `tbl_leetcode_problem` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `title` varchar(255) DEFAULT NULL COMMENT '标题名',
-  `title_cn` varchar(255) DEFAULT NULL COMMENT '中文标题名',
-  `title_slug` varchar(255) DEFAULT NULL COMMENT '路径名',
-  `paid_only` int(1) DEFAULT NULL COMMENT '是否付费',
-  `question_id` bigint(20) NOT NULL COMMENT '问题 ID',
-  `fe_question_id` varchar(64) NOT NULL COMMENT '问题前端 ID',
-  `difficulty` int(11) DEFAULT NULL COMMENT '难度',
-  `has_bug` INT(1) NULL DEFAULT NULL COMMENT '是否存在渲染bug',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `question_id_UNIQUE` (`question_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
--- tbl_leetcode_problem_detail
-CREATE TABLE `tbl_leetcode_problem_detail` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `question_id` bigint(20) NOT NULL COMMENT '问题 ID',
-  `html_content` text NOT NULL COMMENT 'HTML 问题内容',
-  `txt_content` text NOT NULL COMMENT 'TXT 问题内容',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `question_id_UNIQUE` (`question_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
--- tbl_leetcode_image
-CREATE TABLE `tbl_leetcode_image` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `img_name` varchar(255) DEFAULT NULL COMMENT '图片本地名',
-  `img_url` varchar(255) DEFAULT NULL COMMENT '图片远端名',
-  `question_id` bigint(20) NOT NULL COMMENT '问题 ID',
-  `state` int(11) DEFAULT NULL COMMENT '状态',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `img_url_UNIQUE` (`img_url`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-```
+- [MySQL 全量脚本](./SQLScripts/oys3_all_scripts_mysql.sql)
+- [Oracle 全量脚本](./SQLScripts/oys3_all_scripts_oracle.sql)
 
 ## 部分成果展示
 

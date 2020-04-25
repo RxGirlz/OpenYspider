@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,9 +31,10 @@ import java.util.regex.Pattern;
 public class TujidaoService implements ITujidaoService {
 
     /**
+     * s
      * 图集岛-相册目录路径前缀
      */
-    private static final String TUJIDAO_URL_PREFIX = "http://www.tujidao.com/u/?action=gengxin&page=";
+    private static final String TUJIDAO_URL_PREFIX = "https://www.tujidao.com/u/?action=gengxin&page=";
     /**
      * 图集岛-本地存储路径前缀（根据情况自定义）
      */
@@ -52,6 +56,41 @@ public class TujidaoService implements ITujidaoService {
     @Autowired
     private ITujidaoAlbumMapper tujidaoAlbumMapper;
 
+    HostnameVerifier hv = (s, sslSession) -> true;
+
+    private void trustAllHttpsCertificates() throws Exception {
+        javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[1];
+        javax.net.ssl.TrustManager tm = new miTM();
+        trustAllCerts[0] = tm;
+        javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, null);
+        javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+    }
+
+    static class miTM implements javax.net.ssl.TrustManager, javax.net.ssl.X509TrustManager {
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+
+        public boolean isServerTrusted(java.security.cert.X509Certificate[] certs) {
+            return true;
+        }
+
+        public boolean isClientTrusted(java.security.cert.X509Certificate[] certs) {
+            return true;
+        }
+
+        public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType)
+                throws java.security.cert.CertificateException {
+            return;
+        }
+
+        public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType)
+                throws java.security.cert.CertificateException {
+            return;
+        }
+    }
+
     @Override
     public String doScanAlbums() {
         // Cookies
@@ -60,9 +99,19 @@ public class TujidaoService implements ITujidaoService {
         cookiesMap.put("7Dw1Tw3Bh2Mvu%5Fleixing", "0");
         cookiesMap.put("7Dw1Tw3Bh2Mvu%5Fpw", "c85f71f0fccab6ec");
         cookiesMap.put("7Dw1Tw3Bh2Mvu%5Fusername", "rxgirlz");
-        cookiesMap.put("ASPSESSIONIDAARTABDD", "CPFDHMNAFPLGGCKNALKFFFDE");
-        cookiesMap.put("CNZZDATA1257039673", "1450844396-1568287597-%7C1568292998");
-        cookiesMap.put("UM_distinctid", "16d258579f52e1-0321e74b65393f-5373e62-1fa400-16d258579f75aa");
+        cookiesMap.put("ASPSESSIONIDAARTABDD", "CJHGFAFDGOCPIBPAOJMNANII");
+        cookiesMap.put("CNZZDATA1257039673", "1491364372-1585968881-%7C1585968881");
+        cookiesMap.put("UM_distinctid", "17143579959cd-06c5183d402301-670103b-1fa400-1714357995b144");
+        cookiesMap.put("atpsida", "d3fcaa20a518f0a89b66f8e0_1585972742_2");
+        cookiesMap.put("cna", "A/QOF+As4msCAXWIT4hazXKP");
+        cookiesMap.put("sca", "7e1da99e");
+
+        try {
+            trustAllHttpsCertificates();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        HttpsURLConnection.setDefaultHostnameVerifier(hv);
 
         Document document = null;
         final int MIN_PAGE = 1;
@@ -71,7 +120,7 @@ public class TujidaoService implements ITujidaoService {
             try {
                 document = Jsoup.connect(TUJIDAO_URL_PREFIX + i).cookies(cookiesMap).get();
             } catch (IOException e) {
-                log.error(e.getMessage());
+                log.error("==>url={} e={}", TUJIDAO_URL_PREFIX + i, e.getMessage());
             }
             if (Objects.nonNull(document)) {
                 document.getElementsByClass("c1").first().getElementsByTag("a").forEach(e -> {
@@ -154,18 +203,18 @@ public class TujidaoService implements ITujidaoService {
                 log.error("==>localFolder={} 创建文件路径失败", localFolder);
             }
         }
-        final int startInt = 32181;
-        final int endInt = 33073;
+        final int startInt = 34154;
+        final int endInt = 34567;
 
         for (int i = startInt; i <= endInt; i++) {
 
-            String onlinePath = TUJIDAO_IMG_URL_PREFIX + i + "/0.jpg";
-            String localPath = localFolder + "/" + i + "-0.jpg";
+            String onlinePath = "D:/图集岛爬虫Preview/" + i + "/1.jpg";
+            String localPath = localFolder + i + "-1.jpg";
 
             // 幂等，若当前文件未下载，则进行下载
             File file2 = new File(localPath);
             if (!file2.exists()) {
-                ReptileUtil.ioDownload(onlinePath, localPath);
+                ReptileUtil.fileCopy(onlinePath, localPath);
             }
         }
         return "success";
@@ -173,10 +222,14 @@ public class TujidaoService implements ITujidaoService {
 
     @Override
     public String doPreDownload() {
-        final int startInt = 32181;
-        final int endInt = 33073;
+        ExecutorService executors = Executors.newFixedThreadPool(8);
+//        final int startInt = 33074;
+//        final int endInt = 34153;
+        final int startInt = 34154;
+        final int endInt = 34567;
         for (int i = startInt; i <= endInt; i++) {
-            this.downloadByAlbumId(String.valueOf(i));
+            final int finalI = i;
+            executors.submit(() -> downloadByAlbumId(String.valueOf(finalI)));
         }
         return "success";
     }
@@ -232,7 +285,7 @@ public class TujidaoService implements ITujidaoService {
             File file2 = new File(localPath);
 
             if (!file2.exists()) {
-                if (!ReptileUtil.ioDownload(onlinePath, localPath)) {
+                if (!ReptileUtil.ioDownload2(onlinePath, localPath)) {
                     break;
                 }
             }

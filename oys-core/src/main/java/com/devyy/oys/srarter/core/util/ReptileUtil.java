@@ -1,13 +1,15 @@
 package com.devyy.oys.srarter.core.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.regex.Pattern;
 
 /**
@@ -57,6 +59,34 @@ public class ReptileUtil {
         }
     }
 
+    public static boolean ioDownload2(String onlineUrl, String localUrl) {
+        try {
+            FileUtils.copyURLToFile(new URL(onlineUrl), new File(localUrl));
+            log.info("==>io下载成功 localUrl={}", localUrl);
+            return true;
+        } catch (Exception e) {
+            if (!(e instanceof FileNotFoundException)) {
+                log.error("onlineUrl={} e={}", onlineUrl, e.getMessage(), e);
+            }
+            return false;
+        }
+    }
+
+    public static boolean nioDownload(String onlineUrl, String localUrl) {
+        try (InputStream ins = new URL(onlineUrl).openStream()) {
+            Path target = Paths.get(localUrl);
+            Files.createDirectories(target.getParent());
+            Files.copy(ins, target, StandardCopyOption.REPLACE_EXISTING);
+            log.info("==>nio下载成功 localUrl={}", localUrl);
+            return true;
+        } catch (Exception e) {
+            if (!(e instanceof FileNotFoundException)) {
+                log.error(e.getMessage(), e);
+            }
+            return false;
+        }
+    }
+
 
     /**
      * 图片移动
@@ -68,6 +98,25 @@ public class ReptileUtil {
         File oldName = new File(oldPath);
         File newName = new File(newPath);
         return oldName.renameTo(newName);
+    }
+
+    /**
+     * 图片移动
+     *
+     * @param oldPath 原始路径
+     * @param newPath 目标路径
+     */
+    public static boolean fileCopy(String oldPath, String newPath) {
+        File oldName = new File(oldPath);
+        File newName = new File(newPath);
+        try {
+            FileUtils.copyFile(oldName, newName);
+            log.info("==>fileCopy success oldPath={} newPath={}", oldPath, newPath);
+            return true;
+        } catch (IOException e) {
+            log.warn("==>fileCopy failed oldPath={} newPath={}", oldPath, newPath);
+            return false;
+        }
     }
 
 }

@@ -27,8 +27,7 @@ public class Swagger2Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("OpenYSpider 千万级图片爬虫、视频爬虫 [开源版本]")
-                .version("v2.x")
+                .version("v3.x")
                 .build();
     }
-
 }

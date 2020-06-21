@@ -11,7 +11,6 @@
 
     <artifactId>oys-core</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -21,7 +20,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
-
         <!-- jsoup -->
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -51,11 +49,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql_connecter_version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.oracle</groupId>-->
-<!--            <artifactId>ojdbc6</artifactId>-->
-<!--            <version>${ojdbc_version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.oracle</groupId>-->
+        <!--            <artifactId>ojdbc8</artifactId>-->
+        <!--            <version>${ojdbc_version}</version>-->
+        <!--        </dependency>-->
         <!-- mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>

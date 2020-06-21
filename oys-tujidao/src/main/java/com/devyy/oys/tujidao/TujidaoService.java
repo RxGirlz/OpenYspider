@@ -13,7 +13,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,7 +40,7 @@ public class TujidaoService implements ITujidaoService {
     // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（00001-10000）/";
     // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（10001-20000）/";
     // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（20001-27864）/";
-//    private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（27865-）/";
+    // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（27865-）/";
     private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（30001-）/";
 
     /**
@@ -138,7 +137,7 @@ public class TujidaoService implements ITujidaoService {
                     queryMap.put("album_id", tujidaoDO.getAlbumId());
                     if (CollectionUtils.isEmpty(tujidaoAlbumMapper.selectByMap(queryMap))) {
                         tujidaoAlbumMapper.insert(tujidaoDO);
-                        log.info("number={},total={},type={},title={}", tujidaoDO.getAlbumId(), tujidaoDO.getTotal(), tujidaoDO.getType(), tujidaoDO.getAlbumName());
+                        log.info("number={}同步成功,total={},type={},title={}", tujidaoDO.getAlbumId(), tujidaoDO.getTotal(), tujidaoDO.getType(), tujidaoDO.getAlbumName());
                     } else {
                         log.info("number={}已存在", tujidaoDO.getAlbumId());
                     }
@@ -203,8 +202,10 @@ public class TujidaoService implements ITujidaoService {
                 log.error("==>localFolder={} 创建文件路径失败", localFolder);
             }
         }
-        final int startInt = 34154;
-        final int endInt = 34567;
+        // 34568
+        // 35157
+        final int startInt = 34568;
+        final int endInt = 35157;
 
         for (int i = startInt; i <= endInt; i++) {
 
@@ -223,10 +224,8 @@ public class TujidaoService implements ITujidaoService {
     @Override
     public String doPreDownload() {
         ExecutorService executors = Executors.newFixedThreadPool(8);
-//        final int startInt = 33074;
-//        final int endInt = 34153;
-        final int startInt = 34154;
-        final int endInt = 34567;
+        final int startInt = 34850;
+        final int endInt = 35157;
         for (int i = startInt; i <= endInt; i++) {
             final int finalI = i;
             executors.submit(() -> downloadByAlbumId(String.valueOf(finalI)));
@@ -312,6 +311,5 @@ public class TujidaoService implements ITujidaoService {
     private String rmIllegalName(String s) {
         return FILE_PATTERN.matcher(s).replaceAll("");
     }
-
-
 }
+

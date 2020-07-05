@@ -1,38 +1,40 @@
-# OpenYspider 3.x
+# OpenYspider 3.1
 
-千万级图片、视频爬虫 [开源版本]：`tujidao.com`、`yande.re`、`meinvla.net`
+千万级图片、视频爬虫 [开源版本]：`tujidao.com`、`meinvla.net`：
 
 ![](swagger-ui.png)
 
 注: `tangyun365.com`、`yalayi.com`、`rosmm88.com`、`mzsock.com`、`m7.22c.im` 请切换至 `1.x` 分支查看。
 
-## 3.x 版本新特性
+## 3.1 版本新特性
 
-1. `Spring Boot` 版本升级: `2.2.1` => `2.2.4`
-2. `MySQL` 版本升级: `5.7` => `8.0`
-3. 适配 Oracle
-4. 工程模块化
-5. 数据库全量脚本规范化
+1. `Spring Boot` 版本升级: `2.2.1` => `2.3.1`；
+2. `MySQL` 版本升级: `5.7` => `8.0`；
+3. 适配 Oracle；
+4. 工程模块化，整洁架构；
+5. 数据库全量脚本规范化；
 
 ## 使用
 
-由于美女网需要登录，所以必须安装一下插件
+部分网站使用到了 selenium 和 chromedriver，需要下载一下驱动程序，注意需要和 chrome 版本匹配：
 
 ### Windows
- 
+
 下载安装 chromedriver.exe
+
+[http://npm.taobao.org/mirrors/chromedriver](http://npm.taobao.org/mirrors/chromedriver)
 
 ### Mac OS X
 
-安装chromedriver
+安装 chromedriver：
 
-```shell script
+```sh
 brew cask install chromedriver
 ```
 
 然后把插件改成对应路径，例如：
 
-```shell script
+```sh
 System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 ```
 
@@ -43,16 +45,11 @@ System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 - 目标网站：[http://www.tujidao.com/](http://www.tujidao.com/)
 - 特点：图片路径可遍历
 
-### 2 Y 站 [ 461,338P / 718G ]
-
-- 目标网站：[https://yande.re/post](https://yande.re/post)
-- 图片路径长、无相册概念
-
-### 3 美女啦 [ 统计中 约 300w P ]
+### 2 美女啦 [ 统计中 约 300w P ]
 
 - 目标网站：[http://www.meinvla.net/](http://www.meinvla.net/)
 
-### 4 Leetcode 题集
+### 3 Leetcode 题集
 
 - 目标网站：[https://leetcode-cn.com/problems](https://leetcode-cn.com/problems)
 - apache common、freemarker 模板、自动化测试

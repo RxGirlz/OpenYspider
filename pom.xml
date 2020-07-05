@@ -6,12 +6,11 @@
 
     <groupId>com.devyy</groupId>
     <artifactId>openyspider</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>oys-core</module>
-        <module>oys-yande</module>
         <module>oys-meinvla</module>
         <module>oys-tujidao</module>
         <module>oys-boot-starter</module>
@@ -20,19 +19,20 @@
 
     <properties>
         <!-- 三方库 -->
-        <springboot_version>2.2.6.RELEASE</springboot_version>
-        <lombok_version>1.18.6</lombok_version>
-        <mybatisplus_version>3.3.1</mybatisplus_version>
-        <swagger_version>2.9.2</swagger_version>
-        <mysql_connecter_version>8.0.20</mysql_connecter_version>
+        <org.springframework.boot.spring-boot-dependencies.version>2.2.6.RELEASE
+        </org.springframework.boot.spring-boot-dependencies.version>
+        <org.projectlombok.lombok.version>1.18.12</org.projectlombok.lombok.version>
+        <com.baomidou.mybatis-plus-boot-starter.version>3.3.1</com.baomidou.mybatis-plus-boot-starter.version>
+        <io.springfox.swagger2.version>2.9.2</io.springfox.swagger2.version>
+        <commons-io.commons-io.version>2.7</commons-io.commons-io.version>
         <ojdbc_version>12.2.0.1</ojdbc_version>
 
-        <jsoup_version>1.12.1</jsoup_version>
-        <selenium_version>3.14.0</selenium_version>
-        <fastjson_version>1.2.70</fastjson_version>
+        <org.jsoup.jsoup.version>1.13.1</org.jsoup.jsoup.version>
+        <org.seleniumhq.selenium.version>3.141.5</org.seleniumhq.selenium.version>
+        <com.alibaba.fastjson.version>1.2.70</com.alibaba.fastjson.version>
 
         <!-- 一方库 -->
-        <revision>3.0-SNAPSHOT</revision>
+        <revision>3.1-SNAPSHOT</revision>
     </properties>
 
     <dependencyManagement>
@@ -40,7 +40,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${springboot_version}</version>
+                <version>${org.springframework.boot.spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

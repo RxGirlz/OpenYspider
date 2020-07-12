@@ -1,6 +1,5 @@
 package com.devyy.oys.tujidao;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.devyy.oys.srarter.core.enums.StateTypeEnum;
 import com.devyy.oys.srarter.core.util.ReptileUtil;
 import com.devyy.oys.tujidao.dao.ITujidaoAlbumMapper;
@@ -8,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -16,6 +16,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -28,25 +29,28 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 public class TujidaoService implements ITujidaoService {
+    @Value("${oys.tujidao.url.prefix}")
+    private String TUJIDAO_URL_PREFIX;
+    @Value("${oys.tujidao.img.url.prefix}")
+    private String TUJIDAO_IMG_URL_PREFIX;
 
-    /**
-     * s
-     * 图集岛-相册目录路径前缀
-     */
-    private static final String TUJIDAO_URL_PREFIX = "https://www.tujidao.com/u/?action=gengxin&page=";
-    /**
-     * 图集岛-本地存储路径前缀（根据情况自定义）
-     */
-    // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（00001-10000）/";
-    // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（10001-20000）/";
-    // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（20001-27864）/";
-    // private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（27865-）/";
-    private static final String TUJIDAO_LOCAL_PREFIX = "D:/图集岛爬虫（30001-）/";
+    @Value("${oys.tujidao.local.folder.prefix}")
+    private String TUJIDAO_LOCAL_FOLDER_PREFIX;
+    @Value("${oys.tujidao.local.preview.prefix}")
+    private String TUJIDAO_LOCAL_PREVIEW_PREFIX;
+    @Value("${oys.tujidao.local.cover.prefix}")
+    private String TUJIDAO_LOCAL_COVER_PREFIX;
 
-    /**
-     * 图集岛-图片真实路径前缀
-     */
-    private static final String TUJIDAO_IMG_URL_PREFIX = "https://ii.hywly.com/a/1/";
+    @Value("${oys.tujidao.local.cover.num.start}")
+    private Integer TUJIDAO_LOCAL_COVER_START;
+    @Value("${oys.tujidao.local.cover.num.end}")
+    private Integer TUJIDAO_LOCAL_COVER_END;
+
+    @Value("${oys.tujidao.local.preview.num.start}")
+    private Integer TUJIDAO_LOCAL_PREVIEW_START;
+    @Value("${oys.tujidao.local.preview.num.end}")
+    private Integer TUJIDAO_LOCAL_PREVIEW_END;
+
     /**
      * 文件不合法名正则
      */
@@ -137,9 +141,10 @@ public class TujidaoService implements ITujidaoService {
                     queryMap.put("album_id", tujidaoDO.getAlbumId());
                     if (CollectionUtils.isEmpty(tujidaoAlbumMapper.selectByMap(queryMap))) {
                         tujidaoAlbumMapper.insert(tujidaoDO);
-                        log.info("number={}同步成功,total={},type={},title={}", tujidaoDO.getAlbumId(), tujidaoDO.getTotal(), tujidaoDO.getType(), tujidaoDO.getAlbumName());
+                        log.info("number={} 同步成功,total={},type={},title={}",
+                                tujidaoDO.getAlbumId(), tujidaoDO.getTotal(), tujidaoDO.getType(), tujidaoDO.getAlbumName());
                     } else {
-                        log.info("number={}已存在", tujidaoDO.getAlbumId());
+                        log.info("number={} 已存在", tujidaoDO.getAlbumId());
                     }
                 });
             }
@@ -149,68 +154,29 @@ public class TujidaoService implements ITujidaoService {
 
     @Override
     public String doScanImages() {
-        return null;
+        return "success";
     }
 
-    @Deprecated
     @Override
     public String doDownload() {
-        ExecutorService executorService = Executors.newFixedThreadPool(8);
-        final int startInt = 30001;
-        final int endInt = 40000;
-        QueryWrapper<TujidaoAlbumDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().select().between(TujidaoAlbumDO::getAlbumId, startInt, endInt);
-        tujidaoAlbumMapper.selectList(queryWrapper).forEach(albumDO -> {
-            int total = albumDO.getTotal();
-            int num = albumDO.getAlbumId();
-            String title = albumDO.getAlbumName();
-
-            String localFolder = TUJIDAO_LOCAL_PREFIX + title;
-            // 若文件夹路径不存在，则新建
-            File file = new File(localFolder);
-            if (!file.exists()) {
-                if (!file.mkdirs()) {
-                    log.error("==>localFolder={} 创建文件路径失败", localFolder);
-                }
-            }
-            for (int i = 0; i <= total; i++) {
-                String onlinePath = TUJIDAO_IMG_URL_PREFIX + num + "/" + i + ".jpg";
-                String localPath = localFolder + "/" + i + ".jpg";
-
-                // 幂等，若当前文件未下载，则进行下载
-                File file2 = new File(localPath);
-                if (!file2.exists()) {
-//                    executorService.execute(() -> {
-                    ReptileUtil.ioDownload(localPath, onlinePath);
-//                    });
-                }
-            }
-//            albumDO.setState(StateTypeEnum.ANALYSIS.getSeq());
-//            tujidaoAlbumMapper.updateById(albumDO);
-//            log.info("==>albumId={} 已下载完成", num);
-        });
         return "success";
     }
 
     @Override
     public String doDownloadCover() {
-        String localFolder = "D:/图集岛爬虫封面/";
         // 若文件夹路径不存在，则新建
-        File file = new File(localFolder);
+        File file = new File(TUJIDAO_LOCAL_COVER_PREFIX);
         if (!file.exists()) {
             if (!file.mkdirs()) {
-                log.error("==>localFolder={} 创建文件路径失败", localFolder);
+                log.error("==>localFolder={} 创建文件路径失败", TUJIDAO_LOCAL_COVER_PREFIX);
             }
         }
-        // 34568
-        // 35157
-        final int startInt = 34568;
-        final int endInt = 35157;
+        final int startInt = TUJIDAO_LOCAL_COVER_START;
+        final int endInt = TUJIDAO_LOCAL_COVER_END;
 
         for (int i = startInt; i <= endInt; i++) {
-
-            String onlinePath = "D:/图集岛爬虫Preview/" + i + "/1.jpg";
-            String localPath = localFolder + i + "-1.jpg";
+            String onlinePath = String.format(Locale.CHINESE, "%s%d/1.jpg", TUJIDAO_LOCAL_PREVIEW_PREFIX, i);
+            String localPath = String.format(Locale.CHINESE, "%s%d-1.jpg", TUJIDAO_LOCAL_COVER_PREFIX, i);
 
             // 幂等，若当前文件未下载，则进行下载
             File file2 = new File(localPath);
@@ -224,8 +190,8 @@ public class TujidaoService implements ITujidaoService {
     @Override
     public String doPreDownload() {
         ExecutorService executors = Executors.newFixedThreadPool(8);
-        final int startInt = 34850;
-        final int endInt = 35157;
+        final int startInt = TUJIDAO_LOCAL_PREVIEW_START;
+        final int endInt = TUJIDAO_LOCAL_PREVIEW_END;
         for (int i = startInt; i <= endInt; i++) {
             final int finalI = i;
             executors.submit(() -> downloadByAlbumId(String.valueOf(finalI)));
@@ -241,7 +207,7 @@ public class TujidaoService implements ITujidaoService {
             int total = albumDO.getTotal();
             int albumId = albumDO.getAlbumId();
             String albumName = albumDO.getAlbumName();
-            String localFolder = TUJIDAO_LOCAL_PREFIX + albumName;
+            String localFolder = TUJIDAO_LOCAL_FOLDER_PREFIX + albumName;
             // 若文件夹路径不存在，则新建
             File file = new File(localFolder);
             if (!file.exists()) {
@@ -250,8 +216,8 @@ public class TujidaoService implements ITujidaoService {
                 }
             }
             for (int i = 0; i <= total; i++) {
-                String onlinePath = "D:/图集岛爬虫Preview/" + albumId + "/" + i + ".jpg";
-                String localPath = localFolder + "/" + i + ".jpg";
+                String onlinePath = String.format(Locale.CHINESE, "%s%s/%d.jpg", TUJIDAO_LOCAL_PREVIEW_PREFIX, albumId, i);
+                String localPath = String.format(Locale.CHINESE, "%s/%d.jpg", localFolder, i);
 
                 // 幂等，若当前文件未下载，则进行下载
                 File file2 = new File(localPath);
@@ -267,7 +233,7 @@ public class TujidaoService implements ITujidaoService {
     }
 
     private void downloadByAlbumId(String albumId) {
-        String localFolder = "D:/图集岛爬虫Preview/" + albumId + "/";
+        String localFolder = TUJIDAO_LOCAL_PREVIEW_PREFIX + albumId + "/";
         // 若文件夹路径不存在，则新建
         File file = new File(localFolder);
         if (!file.exists()) {
@@ -275,14 +241,12 @@ public class TujidaoService implements ITujidaoService {
                 log.error("==>localFolder={} 创建文件路径失败", localFolder);
             }
         }
-
         for (int i = 0; ; i++) {
-            String onlinePath = TUJIDAO_IMG_URL_PREFIX + albumId + "/" + i + ".jpg";
-            String localPath = localFolder + i + ".jpg";
+            String onlinePath = String.format(Locale.CHINESE, "%s%s/%d.jpg", TUJIDAO_IMG_URL_PREFIX, albumId, i);
+            String localPath = String.format(Locale.CHINESE, "%s%d.jpg", localFolder, i);
 
             // 幂等，若当前文件未下载，则进行下载
             File file2 = new File(localPath);
-
             if (!file2.exists()) {
                 if (!ReptileUtil.ioDownload2(onlinePath, localPath)) {
                     break;

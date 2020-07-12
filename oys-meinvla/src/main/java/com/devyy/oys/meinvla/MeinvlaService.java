@@ -3,6 +3,7 @@ package com.devyy.oys.meinvla;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.devyy.oys.meinvla.dao.IMeinvlaAlbumMapper;
 import com.devyy.oys.meinvla.dao.IMeinvlaImageMapper;
+import com.devyy.oys.srarter.core.OpenYspiderAutoConfig;
 import com.devyy.oys.srarter.core.enums.StateTypeEnum;
 import com.devyy.oys.srarter.core.util.ReptileUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -127,7 +128,8 @@ public class MeinvlaService implements IMeinvlaService {
     @Override
     public String doScanImages() {
         // 配置 chromedriver.exe 路径
-        System.setProperty("webdriver.chrome.driver", "C:/Users/DEVYY/Documents/chromedriver_win32/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", OpenYspiderAutoConfig.getWEBDRIVER_CHROME_DRIVER_PATH());
+        log.info("==>doScanImages webdriver.chrome.driver={}", System.getProperty("webdriver.chrome.driver"));
         // Mac 用户
         // todo 这些配置，最好放到application.properties文件里
         // System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
@@ -143,7 +145,7 @@ public class MeinvlaService implements IMeinvlaService {
         wrapper.select()
                 .ne("state", StateTypeEnum.BLACKLIST.getSeq())
                 .isNull("total")
-                .in("type", 87,89,95,96,97,112,113,116,117,118,119,120);
+                .in("type", 87, 89, 95, 96, 97, 112, 113, 116, 117, 118, 119, 120);
         meinvlaAlbumMapper.selectList(wrapper).forEach(vo -> {
             final Integer albumId = vo.getAlbumId();
             // http://www.meinvla.net/play/6048211.html
@@ -254,7 +256,7 @@ public class MeinvlaService implements IMeinvlaService {
         QueryWrapper<MeinvlaAlbumDO> wrapper = new QueryWrapper<>();
         wrapper.select()
                 .ne("state", StateTypeEnum.BLACKLIST.getSeq())
-                .in("type", 87,89,95,96,97,112,113,116,117,118,119,120);
+                .in("type", 87, 89, 95, 96, 97, 112, 113, 116, 117, 118, 119, 120);
         meinvlaAlbumMapper.selectList(wrapper).forEach(vo -> {
             final int albumId = vo.getAlbumId();
             final String albumName = vo.getAlbumName();

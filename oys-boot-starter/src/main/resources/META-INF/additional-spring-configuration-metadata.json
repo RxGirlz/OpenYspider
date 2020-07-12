@@ -1,0 +1,54 @@
+{
+  "properties": [
+    {
+      "name": "oys.config.webdriver.chrome.driver.path",
+      "type": "java.lang.String",
+      "description": "webdriver.chrome.driver path（根据情况自定义）."
+    },
+    {
+      "name": "oys.tujidao.url.prefix",
+      "type": "java.lang.String",
+      "description": "图集岛-相册信息目录路径前缀."
+    },
+    {
+      "name": "oys.tujidao.img.url.prefix",
+      "type": "java.lang.String",
+      "description": "图集岛-图片资源目录路径前缀."
+    },
+    {
+      "name": "oys.tujidao.local.folder.prefix",
+      "type": "java.lang.String",
+      "description": "图集岛-本地存储路径前缀（根据情况自定义）."
+    },
+    {
+      "name": "oys.tujidao.local.preview.prefix",
+      "type": "java.lang.String",
+      "description": "图集岛-本地预览存储路径前缀（根据情况自定义）."
+    },
+    {
+      "name": "oys.tujidao.local.cover.prefix",
+      "type": "java.lang.String",
+      "description": "图集岛-本地封面存储路径前缀（根据情况自定义）."
+    },
+    {
+      "name": "oys.tujidao.local.cover.num.start",
+      "type": "java.lang.Integer",
+      "description": "图集岛-本地封面开始下标（根据情况自定义）."
+    },
+    {
+      "name": "oys.tujidao.local.cover.num.end",
+      "type": "java.lang.Integer",
+      "description": "图集岛-本地封面结束下标（根据情况自定义）."
+    },
+    {
+      "name": "oys.tujidao.local.preview.num.start",
+      "type": "java.lang.Integer",
+      "description": "图集岛-预下载开始下标（根据情况自定义）."
+    },
+    {
+      "name": "oys.tujidao.local.preview.num.end",
+      "type": "java.lang.Integer",
+      "description": "图集岛-预下载结束下标（根据情况自定义）."
+    }
+  ]
+}

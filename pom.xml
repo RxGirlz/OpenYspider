@@ -22,14 +22,15 @@
         <org.springframework.boot.spring-boot-dependencies.version>2.3.1.RELEASE
         </org.springframework.boot.spring-boot-dependencies.version>
         <org.projectlombok.lombok.version>1.18.12</org.projectlombok.lombok.version>
-        <com.baomidou.mybatis-plus-boot-starter.version>3.3.1</com.baomidou.mybatis-plus-boot-starter.version>
+        <com.baomidou.mybatis-plus-boot-starter.version>3.3.1
+        </com.baomidou.mybatis-plus-boot-starter.version>
         <io.springfox.swagger2.version>2.9.2</io.springfox.swagger2.version>
         <commons-io.commons-io.version>2.7</commons-io.commons-io.version>
         <ojdbc_version>12.2.0.1</ojdbc_version>
 
         <org.jsoup.jsoup.version>1.13.1</org.jsoup.jsoup.version>
         <org.seleniumhq.selenium.version>3.141.5</org.seleniumhq.selenium.version>
-        <com.alibaba.fastjson.version>1.2.70</com.alibaba.fastjson.version>
+        <com.alibaba.fastjson.version>1.2.72</com.alibaba.fastjson.version>
 
         <!-- 一方库 -->
         <revision>3.1-SNAPSHOT</revision>

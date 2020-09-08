@@ -10,18 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.regex.Pattern;
 
 /**
  * @since 2019-12-01
  */
 @Slf4j
 public class ReptileUtil {
-
-    /**
-     * 文件不合法名正则
-     */
-    private static final Pattern FILE_PATTERN = Pattern.compile("[\\\\/:*?\"<>|]");
 
     /**
      * 同步图片下载

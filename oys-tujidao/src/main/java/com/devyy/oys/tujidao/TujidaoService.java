@@ -98,21 +98,20 @@ public class TujidaoService implements ITujidaoService {
     public String doScanAlbums() {
         // Cookies
         Map<String, String> cookiesMap = new HashMap<>();
-        cookiesMap.put("7Dw1Tw3Bh2Mvu%5Fid", "157108");
-        cookiesMap.put("7Dw1Tw3Bh2Mvu%5Fleixing", "0");
-        cookiesMap.put("7Dw1Tw3Bh2Mvu%5Fpw", "c85f71f0fccab6ec");
-        cookiesMap.put("7Dw1Tw3Bh2Mvu%5Fusername", "rxgirlz");
-        cookiesMap.put("ASPSESSIONIDAARTABDD", "CJHGFAFDGOCPIBPAOJMNANII");
-        cookiesMap.put("CNZZDATA1257039673", "1491364372-1585968881-%7C1585968881");
-        cookiesMap.put("UM_distinctid", "17143579959cd-06c5183d402301-670103b-1fa400-1714357995b144");
-        cookiesMap.put("atpsida", "d3fcaa20a518f0a89b66f8e0_1585972742_2");
-        cookiesMap.put("cna", "A/QOF+As4msCAXWIT4hazXKP");
-        cookiesMap.put("sca", "7e1da99e");
+        cookiesMap.put("TujidaoService%5Fid", "411999177-1588406642-%7C1600614708");
+        cookiesMap.put("PHPSESSID", "uulfluqmbunauqqjnj4mf8i8dr");
+        cookiesMap.put("UM_distinctid", "171d493d83c1c-074736cab8c8d9-670103b-1fa400-171d493d83d151");
+        cookiesMap.put("atpsida", "7a72b6965366155670da7487_1600614730_4");
+        cookiesMap.put("cna", "MkUPF0HprU0CAXWIT4ixum+C");
+        cookiesMap.put("leixing", "0");
+        cookiesMap.put("name", "rxgirlz");
+        cookiesMap.put("sca", "5cafd77a");
+        cookiesMap.put("uid", "157108");
 
         try {
             trustAllHttpsCertificates();
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error("==>TujidaoService#doScanAlbums failed e=", e);
         }
         HttpsURLConnection.setDefaultHostnameVerifier(hv);
 

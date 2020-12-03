@@ -6,10 +6,17 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @since 2019-12-01
@@ -111,6 +118,31 @@ public class ReptileUtil {
             log.warn("==>fileCopy failed oldPath={} newPath={}", oldPath, newPath);
             return false;
         }
+    }
+
+    /**
+     * dir /b > jav20201129.txt
+     *
+     * @param args
+     * @throws IOException
+     */
+    public static void main(String[] args) throws IOException {
+        File file = new File("E:\\jav20201129.txt");
+        List<String> fanhao = FileUtils.readLines(file, StandardCharsets.UTF_8.name());
+        fanhao.stream()
+                .map(name -> name.split("-")[0])
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .filter(entry -> entry.getValue() >= 5)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                .entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .forEach(System.out::println);
+        List<String> cmdList = fanhao.stream()
+                .map(name -> String.format("echo > %s.txt", name))
+                .collect(Collectors.toList());
+        File out = new File("C:\\Users\\DEVYY\\Documents\\GitHub\\Jav\\jav20201129_out.txt");
+        FileUtils.writeLines(out, cmdList);
     }
 
 }

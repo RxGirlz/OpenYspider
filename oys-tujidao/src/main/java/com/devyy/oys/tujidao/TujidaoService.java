@@ -117,7 +117,7 @@ public class TujidaoService implements ITujidaoService {
 
         Document document = null;
         final int MIN_PAGE = 1;
-        final int MAX_PAGE = 15;
+        final int MAX_PAGE = 50;
         for (int i = MIN_PAGE; i <= MAX_PAGE; i++) {
             try {
                 document = Jsoup.connect(TUJIDAO_URL_PREFIX + i).cookies(cookiesMap).get();

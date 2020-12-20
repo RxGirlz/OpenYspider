@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -62,12 +61,12 @@ public class ReptileUtil {
 
     public static boolean ioDownload2(String onlineUrl, String localUrl) {
         try {
-            FileUtils.copyURLToFile(new URL(onlineUrl), new File(localUrl));
+            FileUtils.copyURLToFile(new URL(onlineUrl), new File(localUrl), 10000, 10000);
             log.info("==>io下载成功 localUrl={}", localUrl);
             return true;
         } catch (Exception e) {
             if (!(e instanceof FileNotFoundException)) {
-                log.error("onlineUrl={} e={}", onlineUrl, e.getMessage(), e);
+                log.error("FileUtils.copyURLToFile failed={} e={}", onlineUrl, e);
             }
             return false;
         }
@@ -95,10 +94,10 @@ public class ReptileUtil {
      * @param oldPath 原始路径
      * @param newPath 目标路径
      */
-    public static boolean fileMove(String oldPath, String newPath) {
+    public static void fileMove(String oldPath, String newPath) {
         File oldName = new File(oldPath);
         File newName = new File(newPath);
-        return oldName.renameTo(newName);
+        oldName.renameTo(newName);
     }
 
     /**
@@ -107,27 +106,25 @@ public class ReptileUtil {
      * @param oldPath 原始路径
      * @param newPath 目标路径
      */
-    public static boolean fileCopy(String oldPath, String newPath) {
+    public static void fileCopy(String oldPath, String newPath) {
         File oldName = new File(oldPath);
         File newName = new File(newPath);
         try {
             FileUtils.copyFile(oldName, newName);
             log.info("==>fileCopy success oldPath={} newPath={}", oldPath, newPath);
-            return true;
         } catch (IOException e) {
             log.warn("==>fileCopy failed oldPath={} newPath={}", oldPath, newPath);
-            return false;
         }
     }
 
     /**
-     * dir /b > jav20201129.txt
+     * dir /b > jav20201219.txt
      *
-     * @param args
-     * @throws IOException
+     * @param args v
+     * @throws IOException v
      */
     public static void main(String[] args) throws IOException {
-        File file = new File("E:\\jav20201129.txt");
+        File file = new File("D:\\jav20201219.txt");
         List<String> fanhao = FileUtils.readLines(file, StandardCharsets.UTF_8.name());
         fanhao.stream()
                 .map(name -> name.split("-")[0])
@@ -141,7 +138,7 @@ public class ReptileUtil {
         List<String> cmdList = fanhao.stream()
                 .map(name -> String.format("echo > %s.txt", name))
                 .collect(Collectors.toList());
-        File out = new File("C:\\Users\\DEVYY\\Documents\\GitHub\\Jav\\jav20201129_out.txt");
+        File out = new File("C:\\Users\\DEVYY\\Documents\\GitHub\\Jav\\jav20201219-out.txt");
         FileUtils.writeLines(out, cmdList);
     }
 

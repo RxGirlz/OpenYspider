@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tbl_leetcode_problem_detail")
+@TableName("oys_leetcode_problem_detail")
 public class LeetCodeProblemDetailDO {
 
     @TableId(type = IdType.AUTO)

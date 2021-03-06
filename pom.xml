@@ -6,7 +6,7 @@
 
     <groupId>com.devyy</groupId>
     <artifactId>openyspider</artifactId>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -19,21 +19,21 @@
 
     <properties>
         <!-- 三方库 -->
-        <org.springframework.boot.spring-boot-dependencies.version>2.3.1.RELEASE
+        <org.springframework.boot.spring-boot-dependencies.version>2.4.3
         </org.springframework.boot.spring-boot-dependencies.version>
-        <org.projectlombok.lombok.version>1.18.12</org.projectlombok.lombok.version>
-        <com.baomidou.mybatis-plus-boot-starter.version>3.3.1
+        <org.projectlombok.lombok.version>1.18.18</org.projectlombok.lombok.version>
+        <com.baomidou.mybatis-plus-boot-starter.version>3.4.2
         </com.baomidou.mybatis-plus-boot-starter.version>
-        <io.springfox.swagger2.version>2.9.2</io.springfox.swagger2.version>
-        <commons-io.commons-io.version>2.7</commons-io.commons-io.version>
-        <ojdbc_version>12.2.0.1</ojdbc_version>
+        <io.springfox.springfox-boot-starter.version>3.0.0
+        </io.springfox.springfox-boot-starter.version>
+        <commons-io.commons-io.version>2.8.0</commons-io.commons-io.version>
 
         <org.jsoup.jsoup.version>1.13.1</org.jsoup.jsoup.version>
-        <org.seleniumhq.selenium.version>3.141.5</org.seleniumhq.selenium.version>
-        <com.alibaba.fastjson.version>1.2.72</com.alibaba.fastjson.version>
+        <org.seleniumhq.selenium.version>3.141.59</org.seleniumhq.selenium.version>
+        <com.alibaba.fastjson.version>1.2.75</com.alibaba.fastjson.version>
 
         <!-- 一方库 -->
-        <revision>3.1-SNAPSHOT</revision>
+        <revision>3.2-SNAPSHOT</revision>
     </properties>
 
     <dependencyManagement>

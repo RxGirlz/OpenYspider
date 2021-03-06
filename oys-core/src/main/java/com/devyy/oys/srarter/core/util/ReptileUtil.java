@@ -118,13 +118,13 @@ public class ReptileUtil {
     }
 
     /**
-     * dir /b > jav20201219.txt
+     * dir /b > jav20210118.txt
      *
      * @param args v
      * @throws IOException v
      */
     public static void main(String[] args) throws IOException {
-        File file = new File("D:\\jav20201219.txt");
+        File file = new File("D:\\jav20210118.txt");
         List<String> fanhao = FileUtils.readLines(file, StandardCharsets.UTF_8.name());
         fanhao.stream()
                 .map(name -> name.split("-")[0])
@@ -138,7 +138,7 @@ public class ReptileUtil {
         List<String> cmdList = fanhao.stream()
                 .map(name -> String.format("echo > %s.txt", name))
                 .collect(Collectors.toList());
-        File out = new File("C:\\Users\\DEVYY\\Documents\\GitHub\\Jav\\jav20201219-out.txt");
+        File out = new File("C:\\Users\\DEVYY\\Documents\\GitHub\\Jav\\jav20210118-out.txt");
         FileUtils.writeLines(out, cmdList);
     }
 

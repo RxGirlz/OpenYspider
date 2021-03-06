@@ -10,7 +10,7 @@ import lombok.Data;
  * @since 2019-12-01
  */
 @Data
-@TableName("tbl_meinvla_album")
+@TableName("oys_meinvla_album")
 public class MeinvlaAlbumDO {
     @TableId(type = IdType.AUTO)
     private Long id;

@@ -1,4 +1,4 @@
-# OpenYspider 3.1
+# OpenYspider 3.2
 
 千万级图片、视频爬虫 [开源版本]：`tujidao.com`、`meinvla.net`：
 
@@ -6,9 +6,9 @@
 
 注: `tangyun365.com`、`yalayi.com`、`rosmm88.com`、`mzsock.com`、`m7.22c.im` 请切换至 `1.x` 分支查看。
 
-## 3.1 版本新特性
+## 3.2 版本新特性
 
-1. `Spring Boot` 版本升级: `2.2.1` => `2.3.1`；
+1. `Spring Boot` 版本升级: `2.2.1` => `2.4.3`；
 2. `MySQL` 版本升级: `5.7` => `8.0`；
 3. 适配 Oracle；
 4. 工程模块化，整洁架构；

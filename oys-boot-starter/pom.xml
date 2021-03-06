@@ -5,7 +5,7 @@
     <parent>
         <artifactId>openyspider</artifactId>
         <groupId>com.devyy</groupId>
-        <version>3.1-SNAPSHOT</version>
+        <version>3.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,22 +30,6 @@
     </dependencies>
 
     <build>
-        <resources>
-<!--            <resource>-->
-<!--                <directory>src/main/resources</directory>-->
-<!--                <excludes>-->
-<!--                    <exclude>application*.properties</exclude>-->
-<!--                </excludes>-->
-<!--            </resource>-->
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>application.properties</include>
-                    <include>application-${spring_profiles_active}.properties</include>
-                </includes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -53,23 +37,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>mysql</id>
-            <properties>
-                <spring_profiles_active>mysql</spring_profiles_active>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>oracle</id>
-            <properties>
-                <spring_profiles_active>oracle</spring_profiles_active>
-            </properties>
-        </profile>
-    </profiles>
-
 </project>

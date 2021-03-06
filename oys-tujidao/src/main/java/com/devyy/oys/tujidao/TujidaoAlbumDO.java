@@ -10,7 +10,7 @@ import lombok.Data;
  * @since 2019-12-01
  */
 @Data
-@TableName("tbl_tujidao_album")
+@TableName("oys_tujidao_album")
 public class TujidaoAlbumDO {
     @TableId(type = IdType.AUTO)
     private Long id;

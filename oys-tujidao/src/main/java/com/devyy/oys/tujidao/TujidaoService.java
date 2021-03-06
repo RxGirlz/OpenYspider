@@ -59,7 +59,7 @@ public class TujidaoService implements ITujidaoService {
     @Autowired
     private ITujidaoAlbumMapper tujidaoAlbumMapper;
 
-    HostnameVerifier hv = (s, sslSession) -> true;
+    private final HostnameVerifier hv = (s, sslSession) -> true;
 
     private void trustAllHttpsCertificates() throws Exception {
         javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[1];
@@ -70,7 +70,7 @@ public class TujidaoService implements ITujidaoService {
         javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
     }
 
-    static class miTM implements javax.net.ssl.TrustManager, javax.net.ssl.X509TrustManager {
+    private static class miTM implements javax.net.ssl.TrustManager, javax.net.ssl.X509TrustManager {
         public java.security.cert.X509Certificate[] getAcceptedIssuers() {
             return null;
         }
@@ -168,6 +168,7 @@ public class TujidaoService implements ITujidaoService {
         if (!file.exists()) {
             if (!file.mkdirs()) {
                 log.error("==>localFolder={} 创建文件路径失败", TUJIDAO_LOCAL_COVER_PREFIX);
+                return "error";
             }
         }
         final int startInt = TUJIDAO_LOCAL_COVER_START;
@@ -212,6 +213,7 @@ public class TujidaoService implements ITujidaoService {
             if (!file.exists()) {
                 if (!file.mkdirs()) {
                     log.error("==>localFolder={} 创建文件路径失败", localFolder);
+                    return;
                 }
             }
             for (int i = 0; i <= total; i++) {
@@ -238,6 +240,7 @@ public class TujidaoService implements ITujidaoService {
         if (!file.exists()) {
             if (!file.mkdirs()) {
                 log.error("==>localFolder={} 创建文件路径失败", localFolder);
+                return;
             }
         }
         for (int i = 0; ; i++) {

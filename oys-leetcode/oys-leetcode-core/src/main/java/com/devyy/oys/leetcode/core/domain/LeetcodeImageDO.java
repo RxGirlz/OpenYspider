@@ -10,7 +10,7 @@ import lombok.Data;
  * @since 2020-02-09
  */
 @Data
-@TableName("tbl_leetcode_image")
+@TableName("oys_leetcode_image")
 public class LeetcodeImageDO {
     @TableId(type = IdType.AUTO)
     private Long id;

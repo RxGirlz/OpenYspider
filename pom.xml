@@ -6,7 +6,7 @@
 
     <groupId>com.devyy</groupId>
     <artifactId>openyspider</artifactId>
-    <version>3.2-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -15,13 +15,14 @@
         <module>oys-tujidao</module>
         <module>oys-boot-starter</module>
         <module>oys-leetcode</module>
+        <module>oys-jav</module>
     </modules>
 
     <properties>
         <!-- 三方库 -->
-        <org.springframework.boot.spring-boot-dependencies.version>2.4.3
+        <org.springframework.boot.spring-boot-dependencies.version>2.4.5
         </org.springframework.boot.spring-boot-dependencies.version>
-        <org.projectlombok.lombok.version>1.18.18</org.projectlombok.lombok.version>
+        <org.projectlombok.lombok.version>1.18.20</org.projectlombok.lombok.version>
         <com.baomidou.mybatis-plus-boot-starter.version>3.4.2
         </com.baomidou.mybatis-plus-boot-starter.version>
         <io.springfox.springfox-boot-starter.version>3.0.0
@@ -56,7 +57,35 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <pomElements>
+                        <dependencies>expand</dependencies>
+                    </pomElements>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

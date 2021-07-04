@@ -50,8 +50,8 @@ public enum StateTypeEnum {
 
     ;
 
-    private int seq;
-    private String desc;
+    private final int seq;
+    private final String desc;
 
     StateTypeEnum(int seq, String desc) {
         this.seq = seq;

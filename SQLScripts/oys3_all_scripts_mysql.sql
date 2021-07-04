@@ -114,3 +114,19 @@ CREATE TABLE OYS_YANDE_IMAGE
    PRIMARY KEY (ID),
    KEY IMG_NAEM_UNIQUE (IMG_NAME)
 );
+
+/*==============================================================*/
+/* Table: OYS_JAV_T                                             */
+/*==============================================================*/
+CREATE TABLE OYS_LEETCODE_IMAGE
+(
+    ID                   VARCHAR(32) NOT NULL COMMENT '番号',
+    studio               VARCHAR(128)  COMMENT '图片本地名',
+    genre                VARCHAR(255)  COMMENT '图片远端名',
+    label          NUMERIC(22,0) NOT NULL  COMMENT '问题 ID',
+    STATE                NUMERIC(3,0)  COMMENT '状态',
+    CREATION_DATE        DATETIME DEFAULT CURRENT_TIMESTAMP  COMMENT '创建时间',
+    LAST_UPDATED_BY      DATETIME DEFAULT CURRENT_TIMESTAMP  COMMENT '最后修改时间',
+    PRIMARY KEY (ID),
+    KEY IMG_URL_UNIQUE (IMG_URL)
+);

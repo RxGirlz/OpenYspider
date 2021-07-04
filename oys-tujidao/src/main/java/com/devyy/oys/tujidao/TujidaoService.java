@@ -250,7 +250,7 @@ public class TujidaoService implements ITujidaoService {
             // 幂等，若当前文件未下载，则进行下载
             File file2 = new File(localPath);
             if (!file2.exists()) {
-                if (!ReptileUtil.ioDownload2(onlinePath, localPath)) {
+                if (!ReptileUtil.ioDownload2Times(onlinePath, localPath, 3)) {
                     break;
                 }
             }

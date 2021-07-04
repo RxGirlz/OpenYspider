@@ -5,7 +5,7 @@
     <parent>
         <artifactId>openyspider</artifactId>
         <groupId>com.devyy</groupId>
-        <version>3.2-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -25,6 +25,11 @@
         <dependency>
             <groupId>com.devyy</groupId>
             <artifactId>oys-meinvla</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.devyy</groupId>
+            <artifactId>oys-jav</artifactId>
             <version>${revision}</version>
         </dependency>
     </dependencies>

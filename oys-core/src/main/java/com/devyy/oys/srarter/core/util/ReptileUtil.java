@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class ReptileUtil {
-
     /**
      * 同步图片下载
      *
@@ -59,17 +58,44 @@ public class ReptileUtil {
         }
     }
 
-    public static boolean ioDownload2(String onlineUrl, String localUrl) {
+    private static boolean ioDownload2(String onlineUrl, String localUrl, int timeout) {
         try {
-            FileUtils.copyURLToFile(new URL(onlineUrl), new File(localUrl), 10000, 10000);
+            FileUtils.copyURLToFile(new URL(onlineUrl), new File(localUrl), timeout, timeout);
             log.info("==>io下载成功 localUrl={}", localUrl);
             return true;
         } catch (Exception e) {
             if (!(e instanceof FileNotFoundException)) {
-                log.error("FileUtils.copyURLToFile failed={} e={}", onlineUrl, e);
+                log.warn("FileUtils.copyURLToFile failed={} e.message={}", onlineUrl, e.getMessage());
             }
             return false;
         }
+    }
+
+    /**
+     * 带重试次数
+     *
+     * @param onlineUrl onlineUrl
+     * @param localUrl  localUrl
+     * @param times     重试次数
+     * @return success
+     */
+    public static boolean ioDownload2Times(String onlineUrl, String localUrl, int times) {
+        if (times < 0) {
+            return false;
+        } else {
+            // timeout 递增
+            int timeout = 10000;
+            if (times < 1) {
+                timeout = 30000;
+            } else if (times < 2) {
+                timeout = 20000;
+            }
+            boolean success = ioDownload2(onlineUrl, localUrl, timeout);
+            if (!success) {
+                return ioDownload2Times(onlineUrl, localUrl, times - 1);
+            }
+        }
+        return true;
     }
 
     public static boolean nioDownload(String onlineUrl, String localUrl) {
@@ -116,30 +142,4 @@ public class ReptileUtil {
             log.warn("==>fileCopy failed oldPath={} newPath={}", oldPath, newPath);
         }
     }
-
-    /**
-     * dir /b > jav20210118.txt
-     *
-     * @param args v
-     * @throws IOException v
-     */
-    public static void main(String[] args) throws IOException {
-        File file = new File("D:\\jav20210118.txt");
-        List<String> fanhao = FileUtils.readLines(file, StandardCharsets.UTF_8.name());
-        fanhao.stream()
-                .map(name -> name.split("-")[0])
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet().stream()
-                .filter(entry -> entry.getValue() >= 5)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-                .entrySet().stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .forEach(System.out::println);
-        List<String> cmdList = fanhao.stream()
-                .map(name -> String.format("echo > %s.txt", name))
-                .collect(Collectors.toList());
-        File out = new File("C:\\Users\\DEVYY\\Documents\\GitHub\\Jav\\jav20210118-out.txt");
-        FileUtils.writeLines(out, cmdList);
-    }
-
 }

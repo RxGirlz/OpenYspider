@@ -5,7 +5,7 @@
     <parent>
         <artifactId>openyspider</artifactId>
         <groupId>com.devyy</groupId>
-        <version>3.2-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -78,6 +78,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.kennycason/kumo-core -->
+        <dependency>
+            <groupId>com.kennycason</groupId>
+            <artifactId>kumo-core</artifactId>
+            <version>1.28</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kennycason</groupId>
+            <artifactId>kumo-api</artifactId>
+            <version>1.28</version>
         </dependency>
     </dependencies>
 

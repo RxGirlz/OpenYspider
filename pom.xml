@@ -20,7 +20,7 @@
 
     <properties>
         <!-- 三方库 -->
-        <org.springframework.boot.spring-boot-dependencies.version>2.4.5
+        <org.springframework.boot.spring-boot-dependencies.version>2.5.2
         </org.springframework.boot.spring-boot-dependencies.version>
         <org.projectlombok.lombok.version>1.18.20</org.projectlombok.lombok.version>
         <com.baomidou.mybatis-plus-boot-starter.version>3.4.2

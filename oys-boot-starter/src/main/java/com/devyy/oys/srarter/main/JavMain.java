@@ -33,17 +33,17 @@ public class JavMain {
     private static final String JAV_BASE_DIR = "C:/Users/DEVYY/Documents/GitHub/Jav";
     /**
      * CMD 输出命令
-     * dir /b > jav20210627.txt
+     * dir /b > jav20210919.txt
      */
-    private static final String JAV_FILE_NAME = "jav20210627";
-    private static final String JAV_INPUT_FILE = String.format(Locale.ENGLISH, "D:/%s.txt", JAV_FILE_NAME);
+    private static final String JAV_FILE_NAME = "jav20210919";
+    private static final String JAV_INPUT_FILE = String.format(Locale.ENGLISH, "E:/%s.txt", JAV_FILE_NAME);
     private static final String JAV_OUTPUT_FILE = String.format(Locale.ENGLISH, "%s/%s.sh", JAV_BASE_DIR, JAV_FILE_NAME);
 
     public static void main(String[] args) {
         // 打印命令行
-        doPrintCommand();
+//        doPrintCommand();
         // 分析
-//        doAnalyse();
+        doAnalyse();
         // 查重
 //        doFindRepeat();
         // 词云

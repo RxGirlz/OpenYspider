@@ -11,30 +11,26 @@
 
     <modules>
         <module>oys-core</module>
-        <module>oys-meinvla</module>
         <module>oys-tujidao</module>
         <module>oys-boot-starter</module>
         <module>oys-leetcode</module>
-        <module>oys-jav</module>
     </modules>
 
     <properties>
         <!-- 三方库 -->
-        <org.springframework.boot.spring-boot-dependencies.version>2.5.2
+        <org.springframework.boot.spring-boot-dependencies.version>2.6.1
         </org.springframework.boot.spring-boot-dependencies.version>
-        <org.projectlombok.lombok.version>1.18.20</org.projectlombok.lombok.version>
-        <com.baomidou.mybatis-plus-boot-starter.version>3.4.2
-        </com.baomidou.mybatis-plus-boot-starter.version>
-        <io.springfox.springfox-boot-starter.version>3.0.0
-        </io.springfox.springfox-boot-starter.version>
-        <commons-io.commons-io.version>2.8.0</commons-io.commons-io.version>
+        <org.projectlombok.lombok.version>1.18.22</org.projectlombok.lombok.version>
+        <com.baomidou.mybatis-plus-boot-starter.version>3.4.2</com.baomidou.mybatis-plus-boot-starter.version>
+        <io.springfox.springfox-boot-starter.version>3.0.0</io.springfox.springfox-boot-starter.version>
+        <commons-io.commons-io.version>2.11.0</commons-io.commons-io.version>
 
-        <org.jsoup.jsoup.version>1.13.1</org.jsoup.jsoup.version>
-        <org.seleniumhq.selenium.version>3.141.59</org.seleniumhq.selenium.version>
-        <com.alibaba.fastjson.version>1.2.75</com.alibaba.fastjson.version>
+        <org.jsoup.jsoup.version>1.14.3</org.jsoup.jsoup.version>
+        <org.seleniumhq.selenium.version>4.1.0</org.seleniumhq.selenium.version>
+        <com.alibaba.fastjson.version>1.2.78</com.alibaba.fastjson.version>
 
         <!-- 一方库 -->
-        <revision>3.2-SNAPSHOT</revision>
+        <revision>4.0-SNAPSHOT</revision>
     </properties>
 
     <dependencyManagement>

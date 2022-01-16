@@ -14,11 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.devyy</groupId>
-            <artifactId>oys-leetcode-presenter-cloud</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.devyy</groupId>
             <artifactId>oys-tujidao</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -29,6 +24,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${org.springframework.boot.spring-boot-dependencies.version}</version>
             </plugin>
         </plugins>
     </build>

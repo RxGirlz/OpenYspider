@@ -13,24 +13,25 @@
         <module>oys-core</module>
         <module>oys-tujidao</module>
         <module>oys-boot-starter</module>
-        <module>oys-leetcode</module>
     </modules>
 
     <properties>
         <!-- 三方库 -->
-        <org.springframework.boot.spring-boot-dependencies.version>2.6.1
+        <org.springframework.boot.spring-boot-dependencies.version>2.6.2
         </org.springframework.boot.spring-boot-dependencies.version>
         <org.projectlombok.lombok.version>1.18.22</org.projectlombok.lombok.version>
-        <com.baomidou.mybatis-plus-boot-starter.version>3.4.2</com.baomidou.mybatis-plus-boot-starter.version>
+        <com.baomidou.mybatis-plus-boot-starter.version>3.5.0</com.baomidou.mybatis-plus-boot-starter.version>
         <io.springfox.springfox-boot-starter.version>3.0.0</io.springfox.springfox-boot-starter.version>
         <commons-io.commons-io.version>2.11.0</commons-io.commons-io.version>
-
         <org.jsoup.jsoup.version>1.14.3</org.jsoup.jsoup.version>
-        <org.seleniumhq.selenium.version>4.1.0</org.seleniumhq.selenium.version>
-        <com.alibaba.fastjson.version>1.2.78</com.alibaba.fastjson.version>
 
         <!-- 一方库 -->
         <revision>4.0-SNAPSHOT</revision>
+
+        <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -48,17 +49,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.7</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -85,5 +78,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

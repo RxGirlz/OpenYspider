@@ -1,8 +1,10 @@
 package com.devyy.oys.srarter.config;
 
 import io.swagger.annotations.ApiOperation;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -12,6 +14,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 /**
+ * Swagger3 配置类
+ *
  * http://localhost:23333/swagger-ui/index.html
  */
 @EnableOpenApi
@@ -30,7 +34,7 @@ public class Swagger3Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("OpenYSpider 千万级图片爬虫、视频爬虫 [开源版本]")
-                .version("v3.x")
+                .version("v4.x")
                 .build();
     }
 

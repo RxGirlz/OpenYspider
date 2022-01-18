@@ -33,7 +33,8 @@ public class Swagger3Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("OpenYSpider 千万级图片爬虫、视频爬虫 [开源版本]")
+                .title("OpenYspider 千万级图片爬虫、视频爬虫 [开源版本]")
+                .description("Github: https://github.com/RxGirlz/OpenYspider")
                 .version("v4.x")
                 .build();
     }

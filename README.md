@@ -8,11 +8,13 @@
 
 OpenYspider 是一个使用 Java 编写的简单爬虫。主要用到的技术栈有：
 
-1. spring-boot-web
-2. mybatis-plus
-3. springfox-swagger3
-4. lombok
-5. jsoup
+1. spring-boot-starter-web
+2. spring-boot-starter-test
+3. mybatis-plus-boot-starter
+4. springfox-boot-starter
+5. lombok
+6. jsoup
+7. mockito + jacoco
 
 当前 LTS 的网站有：
 

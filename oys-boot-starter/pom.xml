@@ -17,6 +17,11 @@
             <artifactId>oys-tujidao</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>com.devyy</groupId>
+            <artifactId>oys-codeforces</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 
     <build>

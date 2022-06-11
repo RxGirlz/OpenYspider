@@ -37,7 +37,7 @@ public class TuJiDaoServiceImplTest {
     @Test
     public void doSyncRecords() throws IOException {
         // mock 网页
-        URL url = getClass().getResource("/gengxin.html");
+        URL url = getClass().getResource("/gengxin2.html");
         Assertions.assertNotNull(url);
         File file = new File(url.getPath());
         Document document = Jsoup.parse(file, StandardCharsets.UTF_8.name());

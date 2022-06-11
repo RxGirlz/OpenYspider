@@ -31,29 +31,35 @@ Deprecated 的网站（请于历史提交中查看）：
 
 ## 开发环境
 
-`Windows 11` + `JDK 11` + `Mysql 8.0.x`
+`Windows 11` + `JDK 17` + `Mysql 8.x`
 
 ```sh
 $ java --version
-java 11.0.13 2021-10-19 LTS
-Java(TM) SE Runtime Environment 18.9 (build 11.0.13+10-LTS-370)
-Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.13+10-LTS-370, mixed mode)
+openjdk 17.0.1 2021-10-19
+OpenJDK Runtime Environment (build 17.0.1+12-39)
+OpenJDK 64-Bit Server VM (build 17.0.1+12-39, mixed mode, sharing)
 ```
 
 运行启动类 `OpenYspiderApplication` 后，浏览器访问 [http://localhost:23333/swagger-ui/index.html#/](http://localhost:23333/swagger-ui/index.html#/)
 
+数据库脚本: [sql_scripts](./sql_scripts/oys3_all_scripts_mysql.sql)
+
 ## 爬取网站
 
-数据统计截止 2021-07-04
+数据统计截止 2022-02-12
 
-### 1 图集岛（原美图日） [ 1,631,937P / 522G ]
+### 1 图集岛（原美图日） [ 2,647,717P / 905G ]
 
-- 目标网站：[http://www.tujidao.com/](http://www.tujidao.com/)
+- 目标网站：[https://www.tujidao.com/](https://www.tujidao.com/)
 - 特点：图片路径可遍历
 
-### 2 美女啦 [ 图片+视频 约 783w P / 397G ]
-
-- 目标网站：[http://www.meinvla.net/](http://www.meinvla.net/)
+```sql
+select count(*) from oys_tujidao_album_t where album_id > 0 and album_id <= 10000; -- 9995 ok
+select count(*) from oys_tujidao_album_t where album_id > 10000 and album_id <= 20000; -- 10000
+select count(*) from oys_tujidao_album_t where album_id > 20000 and album_id <= 30000; -- 9999 [23001]
+select count(*) from oys_tujidao_album_t where album_id > 30000 and album_id <= 40000; -- 10000
+select count(*) from oys_tujidao_album_t where album_id > 40000 and album_id <= 50000; -- 8925 [46018]
+```
 
 ## 部分成果展示
 

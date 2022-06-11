@@ -13,7 +13,7 @@ import lombok.Data;
  * @since 2019-12-01
  */
 @Data
-@TableName("oys_tujidao_album")
+@TableName("oys_tujidao_album_t")
 public class TuJiDaoAlbumDO {
     /**
      * 自增 ID
@@ -44,6 +44,4 @@ public class TuJiDaoAlbumDO {
      */
     @TableField("album_id")
     private Integer albumId;
-
-    private Integer type;
 }

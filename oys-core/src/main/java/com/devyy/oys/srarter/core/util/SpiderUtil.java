@@ -7,7 +7,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * 爬虫工具类
@@ -18,7 +20,18 @@ import java.net.URL;
 public class SpiderUtil {
     private static boolean ioDownload2(String onlineUrl, String localUrl, int timeout) {
         try {
-            FileUtils.copyURLToFile(new URL(onlineUrl), new File(localUrl), timeout, timeout);
+            URL source = new URL(onlineUrl);
+            File destination = new File(localUrl);
+//            FileUtils.copyURLToFile(new URL(onlineUrl), new File(localUrl), timeout, timeout);
+
+            final URLConnection connection = source.openConnection();
+            connection.setRequestProperty("Referer", "https://www.tujidao.com/");
+            connection.setConnectTimeout(timeout);
+            connection.setReadTimeout(timeout);
+            try (final InputStream stream = connection.getInputStream()) {
+                FileUtils.copyInputStreamToFile(stream, destination);
+            }
+
             log.info("==>io下载成功 localUrl={}", localUrl);
             return true;
         } catch (Exception e) {

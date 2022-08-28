@@ -33,9 +33,9 @@ public class JavMain {
     private static final String JAV_BASE_DIR = "D:\\GITHUB\\Jav";
     /**
      * CMD 输出命令
-     * dir /b > jav20220603.txt
+     * dir /b /s > D:\GITHUB\Jav\jav20220824.txt
      */
-    private static final String JAV_FILE_NAME = "jav20220603";
+    private static final String JAV_FILE_NAME = "jav20220824";
     private static final String JAV_INPUT_FILE = String.format(Locale.ENGLISH, "%s/%s.txt", JAV_BASE_DIR, JAV_FILE_NAME);
     private static final String JAV_OUTPUT_FILE = String.format(Locale.ENGLISH, "%s/%s.sh", JAV_BASE_DIR, JAV_FILE_NAME);
 
@@ -59,7 +59,8 @@ public class JavMain {
             List<String> fanHao = FileUtils.readLines(inputFile, StandardCharsets.UTF_8.name());
             List<String> cmdList = fanHao.stream()
                     // 过滤掉 jav202xxxxx.txt
-                    .filter(name -> !name.endsWith(".txt"))
+                    .filter(name -> !name.endsWith(".txt") && name.contains("."))
+                    .map(name -> name.substring(name.lastIndexOf("\\") + 1))
                     .map(name -> String.format(Locale.ENGLISH, "echo > %s.txt", name))
                     .collect(Collectors.toList());
             File outputFile = new File(JAV_OUTPUT_FILE);

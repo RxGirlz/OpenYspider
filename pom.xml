@@ -24,7 +24,7 @@
         <com.baomidou.mybatis-plus-boot-starter.version>3.5.1</com.baomidou.mybatis-plus-boot-starter.version>
         <io.springfox.springfox-boot-starter.version>3.0.0</io.springfox.springfox-boot-starter.version>
         <commons-io.commons-io.version>2.11.0</commons-io.commons-io.version>
-        <org.jsoup.jsoup.version>1.15.1</org.jsoup.jsoup.version>
+        <org.jsoup.jsoup.version>1.15.3</org.jsoup.jsoup.version>
         <org.seleniumhq.selenium.selenium-chrome-driver.version>4.1.4</org.seleniumhq.selenium.selenium-chrome-driver.version>
 
         <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>

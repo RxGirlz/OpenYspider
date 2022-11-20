@@ -215,8 +215,11 @@ public class TuJiDaoServiceImpl implements TuJiDaoService {
         HttpsURLConnection.setDefaultHostnameVerifier(hv);
 
         Document document = null;
-        // 55624-54484
-        for (int i = 1; i <= 100; i++) {
+        // 55625-56283 659
+        // 56284-56939 656
+        // 56940-57639 700
+        // 57640-58330 690
+        for (int i = 1; i <= 50; i++) {
             try {
                 document = Jsoup.connect(tjdWebUrlPrefix + i).cookies(cookiesMap).get();
             } catch (IOException e) {

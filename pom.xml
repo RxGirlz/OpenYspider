@@ -23,7 +23,7 @@
         <org.projectlombok.lombok.version>1.18.24</org.projectlombok.lombok.version>
         <com.baomidou.mybatis-plus-boot-starter.version>3.5.2</com.baomidou.mybatis-plus-boot-starter.version>
         <io.springfox.springfox-boot-starter.version>3.0.0</io.springfox.springfox-boot-starter.version>
-        <commons-io.commons-io.version>2.11.0</commons-io.commons-io.version>
+        <commons-io.commons-io.version>2.14.0</commons-io.commons-io.version>
         <org.jsoup.jsoup.version>1.15.3</org.jsoup.jsoup.version>
         <org.seleniumhq.selenium.selenium-chrome-driver.version>4.1.4</org.seleniumhq.selenium.selenium-chrome-driver.version>
 
